@@ -1,0 +1,11 @@
+# Please fill in the URLrewrite rules or custom Apache config here
+<FilesMatch "\.(html|htm)$">
+    Require all granted
+</FilesMatch>
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/submit\.php$
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.php [L]
+</IfModule>

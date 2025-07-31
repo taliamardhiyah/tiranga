@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crash Game</title>
+  <link rel="stylesheet" href="/assets/crash1/style.css">
+</head>
+<body>
+  <div class="crash-bg">
+    <img src="/assets/crash1/bg.png" class="bg-img" />
+    <div class="crash-rocket">
+      <img src="raw.githubusercontent.com/Casino-Scripts-com/BrixCasino-Script/refs/heads/main/public/assets/images/boom.png" class="rocket-img" />
+      <span id="multiplier">1.00x</span>
+    </div>
+    <form id="betForm">
+      <input type="number" name="amount" min="1000" placeholder="Taruhan" required />
+      <button type="submit">Bet</button>
+    </form>
+    <button id="cashoutBtn" disabled>Cashout</button>
+    <div id="history"></div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/assets/crash1/crash.js"></script>
+</body>
+</html>

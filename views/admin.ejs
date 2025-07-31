@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <h2>Users</h2>
+    <ul>
+        <% users.forEach(user => { %>
+            <li><%= user.username %> - Balance: <%= user.balance %></li>
+        <% }) %>
+    </ul>
+    <h2>Bets</h2>
+    <ul>
+        <% allBets.forEach(bet => { %>
+            <li>User: <%= bet.User.username %> - Amount: <%= bet.amount %> - Status: <%= bet.status %></li>
+        <% }) %>
+    </ul>
+</body>
+</html>

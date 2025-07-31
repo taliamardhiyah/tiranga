@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Game Togel</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Saldo Anda: Rp <%= saldo %></h2>
+    <form method="POST" action="/togel/bet">
+      <select name="type">
+        <option value="2D">2D</option>
+        <option value="3D">3D</option>
+        <option value="4D">4D</option>
+      </select>
+      <input type="text" name="number" placeholder="Nomor Togel" required>
+      <input type="number" name="amount" placeholder="Jumlah Taruhan" required>
+      <button type="submit">Pasang</button>
+    </form>
+  </div>
+</body>
+</html>

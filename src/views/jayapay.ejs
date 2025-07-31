@@ -1,0 +1,14 @@
+<h1>Deposit via Jayapay</h1>
+<% if (error) { %>
+  <div style="color:red"><%= error %></div>
+<% } %>
+<form method="POST" action="/deposit/jayapay">
+  <input type="number" name="money" placeholder="Jumlah Deposit" required><br>
+  <input type="text" name="name" placeholder="Nama" required><br>
+  <input type="text" name="mobile" placeholder="No HP" required><br>
+  <input type="email" name="email" placeholder="Email" required><br>
+  <input type="text" name="number" placeholder="No Rekening Tujuan (optional)"><br>
+  <input type="text" name="bankCode" placeholder="Kode Bank (default 014/BCA)"><br>
+  <input type="text" name="description" placeholder="Deskripsi (optional)"><br>
+  <button type="submit">Deposit</button>
+</form>

@@ -1,0 +1,178 @@
+<div data-v-03b808c2="" class="van-popup van-popup--round van-popup--bottom pop-total"
+    style="max-width: 10rem; left: auto; box-shadow: rgba(80, 200, 120, 0.4) 0px -10px 20px 0px; z-index: 2004; transform: translateY(400px); transition: transform .5s;">
+    
+    <div data-v-03b808c2="" class="betting-mark">
+        <div data-v-03b808c2="" class="info">
+            <div data-v-03b808c2="" class="Bet-box">
+                <ul data-v-03b808c2="" class="c-row c-flex-warp c-row-middle list-join-ao">
+                    <span data-v-03b808c2="">Sum：</span>
+                </ul>
+            </div>
+
+            <div data-v-03b808c2="" class="item c-row c-row-between">
+                <div data-v-03b808c2="" class="tit">Bet</div>
+                <div data-v-03b808c2="" class="c-row amount-box">
+                    <div data-v-03b808c2="" value="500" class="li action">500</div>
+                    <div data-v-03b808c2="" value="10000" class="li">10.000</div>
+                    <div data-v-03b808c2="" value="100000" class="li">100.000</div>
+                    <div data-v-03b808c2="" value="1000000" class="li">1.000.000</div>
+                </div>
+            </div> 
+
+            <div data-v-03b808c2="" class="item c-row c-row-between">
+                <div data-v-03b808c2="" class="tit">Jumlah Kelipatan</div>
+                <div data-v-03b808c2="" class="c-row stepper-box">
+                    <div class="van-field__body">
+                        <input type="tel" value="1" oninput="value=value.replace(/\D/g,'')" inputmode="numeric" class="van-field__control xvalue">
+                    </div>
+                </div>
+            </div>
+
+            <div data-v-03b808c2="" class="item c-row c-flew-end">
+                <div data-v-03b808c2="" class="c-row multiple-box">
+                    <div data-v-03b808c2="" value="1" class="li action">X1</div>
+                </div>
+            </div>
+
+            <div data-v-03b808c2="" class="item c-row c-row-middle">
+                <div data-v-03b808c2="" role="checkbox" tabindex="0" aria-checked="true" class="van-checkbox">
+                    <div class="van-checkbox__icon van-checkbox__icon--square van-checkbox__icon--checked">
+                        <i class="van-icon van-icon-success"></i>
+                    </div>
+                    <span class="van-checkbox__label">
+                        <div data-v-03b808c2="" class="agree">Saya setuju</div>
+                    </span>
+                </div>
+                <span data-v-03b808c2="" class="txt">Aturan Pra-Penjualan</span>
+            </div>
+
+            <!-- Bagian Tombol -->
+            <div data-v-03b808c2="" class="foot">
+                
+                <!-- Tombol Batal -->
+                <div data-v-03b808c2="" class="cancel">
+                    Batal
+                </div>
+                
+                <!-- Tombol Total Amount -->
+                <div data-v-03b808c2="" class="confirm">
+                    <span data-v-03b808c2="" class="p-r-5">Total</span>
+                    <span data-v-03b808c2="" class="result"></span>
+                    <span class="info-bet" xvalue="500" money="500"></span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+/* Footer untuk tombol */
+.foot {
+    background-color: #000000;
+    color: #50C878;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px; /* Beri jarak antar tombol */
+}
+
+.foot .cancel,
+.foot .confirm {
+    flex: 1; /* Membuat tombol memiliki ukuran proporsional */
+    text-align: center;
+    padding: 12px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.foot .cancel {
+    background-color: #222;
+    color: #50C878;
+    box-shadow: 0px 0px 10px rgba(80, 200, 120, 0.7);
+}
+
+.foot .confirm {
+    background-color: #50C878;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.foot .confirm .result {
+    background-color: #121212;
+    padding: 5px 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: #50C878;
+}
+
+/* Pastikan elemen utama tidak tertutup */
+.pop-total {
+    max-width: 90%; /* Supaya tidak terlalu kecil di layar besar */
+    left: auto;
+    bottom: 10px; /* Pastikan tidak terlalu mepet */
+    box-shadow: rgba(80, 200, 120, 0.4) 0px -10px 20px 0px;
+    z-index: 2004;
+    transform: translateY(0);
+    transition: transform .5s;
+}
+
+/* Box Amount */
+.amount-box, .multiple-box {
+    background-color: #121212;
+    padding: 13px;
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+}
+
+/* Box jumlah total */
+.result {
+    background-color: #50C878;
+    padding: 5px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #000;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .foot {
+        flex-direction: row;
+        padding: 6px;
+    }
+
+    .foot .cancel, .foot .confirm {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .result {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+}
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cancelButton = document.querySelector(".cancel");
+        const popTotal = document.querySelector(".pop-total");
+
+        if (cancelButton) {
+            cancelButton.addEventListener("click", function () {
+                popTotal.style.transform = "translateY(400px)"; // Menutup popup dengan animasi
+                setTimeout(() => {
+                    popTotal.style.display = "none"; // Sembunyikan setelah animasi
+                }, 500);
+            });
+        }
+    });
+</script>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Classic Dice Game</title>
+  <style>
+    body { background: #18181b; color: #e5e7eb; font-family: Arial, sans-serif; }
+    .container { max-width: 340px; margin: 40px auto; background: #23232a; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px #0003; }
+    h2 { color: #facc15; text-align: center; }
+    label { display:block; margin-bottom:6px; }
+    input[type=number] { width: 100%; padding: 8px; border-radius: 7px; border: 1.5px solid #4b5563; background: #18181b; color: #fff; font-size: 15px; margin-bottom: 10px;}
+    button { background: linear-gradient(90deg,#10b981 60%,#34d399 100%); color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+    button:hover { background: #059669; }
+    .result { margin-top: 18px; text-align: center; font-size: 18px; }
+    .dice-svg { display: block; margin: 10px auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Classic Dice</h2>
+    <form id="diceForm" autocomplete="off">
+      <label>Pilih angka (1-6):</label>
+      <input type="number" name="betNumber" min="1" max="6" required>
+      <label>Nominal taruhan:</label>
+      <input type="number" name="betAmount" min="1000" required>
+      <button type="submit">Mainkan</button>
+    </form>
+    <div class="result" id="diceResult"></div>
+    <div id="diceAnim"></div>
+  </div>
+  <script>
+    function diceSVG(num) {
+      const dots = [
+        '', // 0
+        '<circle cx="25" cy="25" r="5" fill="#facc15"/>', // 1
+        '<circle cx="15" cy="15" r="5" fill="#facc15"/><circle cx="35" cy="35" r="5" fill="#facc15"/>', // 2
+        '<circle cx="15" cy="15" r="5" fill="#facc15"/><circle cx="25" cy="25" r="5" fill="#facc15"/><circle cx="35" cy="35" r="5" fill="#facc15"/>', // 3
+        '<circle cx="15" cy="15" r="5" fill="#facc15"/><circle cx="35" cy="15" r="5" fill="#facc15"/><circle cx="15" cy="35" r="5" fill="#facc15"/><circle cx="35" cy="35" r="5" fill="#facc15"/>', // 4
+        '<circle cx="15" cy="15" r="5" fill="#facc15"/><circle cx="35" cy="15" r="5" fill="#facc15"/><circle cx="25" cy="25" r="5" fill="#facc15"/><circle cx="15" cy="35" r="5" fill="#facc15"/><circle cx="35" cy="35" r="5" fill="#facc15"/>', // 5
+        '<circle cx="15" cy="15" r="5" fill="#facc15"/><circle cx="35" cy="15" r="5" fill="#facc15"/><circle cx="15" cy="25" r="5" fill="#facc15"/><circle cx="35" cy="25" r="5" fill="#facc15"/><circle cx="15" cy="35" r="5" fill="#facc15"/><circle cx="35" cy="35" r="5" fill="#facc15"/>', // 6
+      ];
+      return `<svg class="dice-svg" width="50" height="50" viewBox="0 0 50 50"><rect width="50" height="50" rx="12" fill="#18181b" stroke="#facc15" stroke-width="3"/>${dots[num]}</svg>`;
+    }
+
+    document.getElementById('diceForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const fd = new FormData(this);
+      document.getElementById('diceResult').innerHTML = "Mengocok dadu...";
+      document.getElementById('diceAnim').innerHTML = diceSVG(Math.floor(Math.random()*6)+1);
+      setTimeout(async ()=>{
+        const res = await fetch('/classic-dice/play', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            betNumber: fd.get('betNumber'),
+            betAmount: fd.get('betAmount')
+          })
+        });
+        const data = await res.json();
+        document.getElementById('diceAnim').innerHTML = diceSVG(data.result);
+        document.getElementById('diceResult').innerHTML =
+          `Dadu: <b>${data.result}</b><br>${data.message}`;
+      }, 900);
+    }
+  </script>
+</body>
+</html>

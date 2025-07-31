@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crash Game</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket = io();
+        socket.on('crash_update', (data) => {
+            document.getElementById('crashPoint').innerText = data.crashPoint.toFixed(2) + 'x';
+        });
+        
+        socket.on('crash_end', (data) => {
+            alert('Game crashed at ' + data.crashPoint.toFixed(2) + 'x');
+        });
+    </script>
+</head>
+<body>
+    <h1>Crash Game</h1>
+    <h2 id="crashPoint"><%= crashPoint.toFixed(2) %>x</h2>
+</body>
+</html>

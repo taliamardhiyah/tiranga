@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dice Game</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #111; color: #fff; }
+    .container { max-width: 600px; margin: auto; padding: 20px; }
+    .balance, .stats, .form, .history { margin-bottom: 30px; }
+    .form input { padding: 8px; margin: 5px; }
+    .form button { padding: 10px 20px; background-color: green; color: white; border: none; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #444; padding: 8px; text-align: center; }
+    th { background-color: #222; }
+    .win { color: #0f0; }
+    .lose { color: #f00; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎲 Dice Game</h1>
+
+    <!-- Saldo Uang -->
+    <div class="balance">
+      <strong>Saldo Anda:</strong> Rp <span id="user-money"><%= user?.money || 0 %></span>
+    </div>
+
+    <!-- Statistik -->
+    <div class="stats">
+      <p>Total Taruhan: <strong><%= betsCount %></strong> kali</p>
+      <p>Total Uang Taruhan: <strong>Rp <%= betsSum.toLocaleString() %></strong></p>
+    </div>
+
+    <!-- Form Taruhan -->
+    <div class="form">
+      <h3>Pasang Taruhan</h3>
+      <form id="bet-form">
+        <input type="hidden" id="id_user" value="<%= user?.id_user || '' %>">
+        <input type="hidden" id="balType" value="money">
+        <input type="number" id="sum" placeholder="Jumlah Taruhan (min 1000)" min="1000" required>
+        <input type="number" id="perc" placeholder="Persentase Menang (1-95)" min="1" max="95" required>
+        <button type="submit">Mainkan 🎲</button>
+      </form>
+      <div id="result"></div>
+    </div>
+
+    <!-- Riwayat -->
+    <div class="history">
+      <h3>Riwayat Taruhan Terakhir</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Jumlah</th>
+            <th>Persentase</th>
+            <th>Result</th>
+            <th>Status</th>
+            <th>Win Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% game.forEach(bet => { %>
+            <tr>
+              <td><%= bet.name_user %></td>
+              <td>Rp <%= bet.sum.toLocaleString() %></td>
+              <td><%= bet.perc %>%</td>
+              <td><%= bet.num %></td>
+              <td class="<%= bet.win ? 'win' : 'lose' %>">
+                <%= bet.win ? 'MENANG' : 'KALAH' %>
+              </td>
+              <td>Rp <%= bet.win_sum.toLocaleString() %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('bet-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const id_user = document.getElementById('id_user').value;
+      const sum = document.getElementById('sum').value;
+      const perc = document.getElementById('perc').value;
+      const balType = document.getElementById('balType').value;
+
+      const res = await fetch('/dice/play', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_user, sum, perc, balType })
+      });
+
+      const data = await res.json();
+      const resultDiv = document.getElementById('result');
+
+      if (data.type === 'error') {
+        resultDiv.innerHTML = `<p style="color:red;">${data.msg}</p>`;
+      } else {
+        resultDiv.innerHTML = `
+          <p>🎲 Hasil: <strong>${data.chislo}</strong></p>
+          <p>Status: <strong class="${data.win ? 'win' : 'lose'}">${data.win ? 'MENANG' : 'KALAH'}</strong></p>
+          <p>Menang: Rp <strong>${data.win_sum.toLocaleString()}</strong></p>
+          <p>Saldo Baru: Rp <strong>${data.currentMoney.toLocaleString()}</strong></p>
+        `;
+        document.getElementById('user-money').textContent = data.currentMoney.toLocaleString();
+      }
+    });
+  </script>
+</body>
+</html>

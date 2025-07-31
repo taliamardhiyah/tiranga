@@ -1,0 +1,23 @@
+<h2>Dice History (Last 50)</h2>
+<table border="1" cellpadding="5">
+  <tr>
+    <th>User</th>
+    <th>Amount</th>
+    <th>Chance (%)</th>
+    <th>Roll</th>
+    <th>Result</th>
+    <th>Profit</th>
+    <th>Time</th>
+  </tr>
+  <% rows.forEach(row => { %>
+    <tr>
+      <td><%= row.name_user %></td>
+      <td><%= row.sum %></td>
+      <td><%= row.perc %></td>
+      <td><%= row.num %></td>
+      <td><%= row.win ? 'WIN' : 'LOSE' %></td>
+      <td><%= row.win_sum %></td>
+      <td><%= row.created_at %></td>
+    </tr>
+  <% }) %>
+</table>

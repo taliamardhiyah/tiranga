@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <style>
+    body {
+      background: #0e0e0e;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #000;
+    }
+    h1 {
+      color: #FFD700;
+      text-align: center;
+    }
+    ul {
+      margin-top: 1rem;
+      padding-left: 1.2rem;
+    }
+    .cta {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .cta a {
+      background: #ff0000;
+      padding: 0.8rem 1.5rem;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>GRATIS Saldo Wingo Rp<%= saldoGratis.toLocaleString('id-ID') %>!</h1>
+    <p>Segera klaim saldo gratis untuk bermain Wingo! Berlaku hanya untuk pengguna baru atau yang belum pernah klaim.</p>
+
+    <h3>Syarat dan Ketentuan:</h3>
+    <ul>
+      <li>Saldo gratis hanya dapat digunakan untuk bermain game <strong>Wingo</strong>.</li>
+      <li>Jika saldo gratis bertambah menjadi:
+        <ul>
+          <% syaratNaik.forEach(nominal => { %>
+            <li>Rp<%= nominal.toLocaleString('id-ID') %> ➤ Wajib melakukan deposit sesuai saldo tersebut.</li>
+          <% }) %>
+        </ul>
+      </li>
+      <li>Tidak berlaku untuk game selain Wingo.</li>
+      <li>Saldo tidak bisa ditarik sebelum memenuhi ketentuan deposit.</li>
+    </ul>
+
+    <div class="cta">
+      <a href="/register">Klaim Freebet Sekarang</a>
+    </div>
+  </div>
+</body>
+</html>

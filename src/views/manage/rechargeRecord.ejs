@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recharge Records</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+  <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+    <%- include('nav') %>
+    <div class="content-wrapper">
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>Recharge List</h1>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="form-group" style="text-align: center;">
+        <input type="text" id="search" placeholder="Enter The Account You Want To Search">
+      </div>
+
+      <section class="content">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recharge List</h3>
+          </div>
+
+          <div class="card-body p-0" style="overflow-y: hidden;">
+            <!-- Menampilkan total deposit harian -->
+            <div style="text-align: center; margin: 10px 0; font-size: 18px;">
+              <strong>Total Deposit Hari Ini: <span id="total_deposit">0</span></strong>
+            </div>
+
+            <table class="table table-striped projects" id="table1">
+              <thead>
+                <tr>
+                  <th class="text-center">#</th>
+                  <th class="text-center">Account</th>
+                  <th class="text-center">Type</th>
+                  <th class="text-center">Amount</th>
+                  <th class="text-center">Code</th>
+                  <th class="text-center">UTR</th>
+                  <th class="text-center">Method</th>
+                  <th class="text-center">Time</th>
+                  <th class="text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/plugins/jquery/jquery.min.js"></script>
+  <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/dist/js/adminlte.min.js"></script>
+  <script src="/js/admin/admin.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script src="/js/admin/tables.js"></script>
+
+  <script>
+    function formateT(params) {
+      return (params < 10) ? "0" + params : params;
+    }
+
+    const PaymentMethodsMap = {
+      upi_gateway: "UPI GATEWAY",
+      upi_gatewa: "UPI GATEWAY",
+      upi_manual: "UPI Manual",
+      usdt_manual: "USDT Manual",
+      usdt_manua: "USDT Manual",
+      wow_pay: "WOW Pay",
+      usdt: "USDT",
+    };
+
+    function timerJoin(params = '', addHours = 0) {
+      let date = params ? new Date(Number(params)) : new Date();
+      date.setHours(date.getHours() + addHours);
+
+      let years = formateT(date.getFullYear());
+      let months = formateT(date.getMonth() + 1);
+      let days = formateT(date.getDate());
+      let hours = date.getHours() % 12 || 12;
+      let ampm = date.getHours() < 12 ? "AM" : "PM";
+      let minutes = formateT(date.getMinutes());
+      let seconds = formateT(date.getSeconds());
+
+      return `${years}-${months}-${days} ${hours}:${minutes}:${seconds} ${ampm}`;
+    }
+
+    function getTodayDate() {
+      let today = new Date();
+      return today.getFullYear() + '-' + formateT(today.getMonth() + 1) + '-' + formateT(today.getDate());
+    }
+
+    function show(params) {
+      if (params.length === 0) {
+        $('tbody').html('<tr class="text-center"><td colspan="7">No data...</td></tr>');
+        return;
+      }
+
+      let html = '';
+      let totalDepositToday = 0;
+      let todayDate = getTodayDate();
+
+      params.forEach((data) => {
+        let transactionDate = new Date(Number(data.time));
+        let formattedDate = transactionDate.getFullYear() + '-' + formateT(transactionDate.getMonth() + 1) + '-' + formateT(transactionDate.getDate());
+
+        if (data.status == 1 && formattedDate === todayDate) {
+          totalDepositToday += parseFloat(data.money);
+        }
+
+        html += `<tr class="text-center">
+                  <td>${data.id}</td>
+                  <td><b>${data.phone}</b></td>
+                  <td>${data.type === 'bank' ? '<b style="color: #3498db">BANKING</b>' : '<b style="color: #a50064">UPI</b>'}</td>
+                  <td><b>${data.money}</b></td>
+                  <td><b>${data.id_order}</b></td>
+                  <td><b>${data.utr}</b></td>
+                  <td><b>${PaymentMethodsMap[data.type] || data.type}</b></td>
+                  <td><b>${timerJoin(data.time)}</b></td>
+                  <td class="project-state">
+                    <span class="badge badge-${data.status == 1 ? 'success' : 'danger'}">
+                      ${data.status == 1 ? 'Success' : 'Closed'}
+                    </span>
+                  </td>
+                </tr>`;
+      });
+
+      $('tbody').html(html);
+      $('#total_deposit').text(totalDepositToday.toLocaleString());
+
+      $('.btn-success').click(function (e) {
+        e.preventDefault();
+        let id = $(this).attr('data');
+        $.ajax({
+          type: "POST",
+          url: "/api/webapi/admin/rechargeDuyet",
+          data: { id: id, type: 'confirm' },
+          dataType: "json",
+          success: function () {
+            Swal.fire('Success!', 'Deposit confirmed!', 'success');
+            setTimeout(() => location.reload(), 100);
+          }
+        });
+      });
+
+      $('.btn-danger').click(function (e) {
+        e.preventDefault();
+        let id = $(this).attr('data');
+        $.ajax({
+          type: "POST",
+          url: "/api/webapi/admin/rechargeDuyet",
+          data: { id: id, type: 'delete' },
+          dataType: "json",
+          success: function () {
+            Swal.fire('Deleted!', 'Transaction removed!', 'success');
+            setTimeout(() => location.reload(), 100);
+          }
+        });
+      });
+    }
+
+    $.ajax({
+      type: "POST",
+      url: "/api/webapi/admin/recharge",
+      data: {},
+      dataType: "json",
+      success: function (response) {
+        show(response.datas2);
+      }
+    });
+  </script>
+</body>
+
+</html>

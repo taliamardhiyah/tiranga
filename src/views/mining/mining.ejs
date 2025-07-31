@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Mining Bitcoin Investasi</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+      background: #18181b url('https://www.transparenttextures.com/patterns/stardust.png'); 
+      color: #e5e7eb; margin:0; 
+    }
+    .container { max-width: 540px; margin: 0 auto; padding: 24px 8px; }
+    h2 { color: #10b981; margin-bottom: 10px; text-align: center; }
+    .saldo-bar { background: #23232a; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px #0004; }
+    .saldo-bar img { height: 36px; margin-right: 10px; border-radius: 50%; }
+    .saldo-label { font-size: 17px; color: #facc15; font-weight: bold; }
+    .saldo-value { font-size: 22px; font-weight: bold; color: #10b981; }
+    .box { background: #23232a; border-radius: 12px; padding: 18px 14px; margin-bottom: 18px; box-shadow: 0 2px 12px #0003; }
+    label { display:block; margin-bottom:6px; }
+    input[type=number] { width: 100%; padding: 8px; border-radius: 7px; border: 1.5px solid #4b5563; background: #18181b; color: #fff; font-size: 15px; margin-bottom: 10px;}
+    button { background: linear-gradient(90deg,#10b981 60%,#34d399 100%); color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 2px 8px #0002;}
+    button:hover { background: #059669; }
+    .info { color: #facc15; font-size: 15px; margin-bottom: 8px; }
+    .vip { color: #6366f1; font-weight: bold; margin-bottom: 8px; }
+    .mining-img { display: block; margin: 0 auto 12px auto; max-width: 120px; filter: drop-shadow(0 0 12px #facc15cc); }
+    .mining-anim { display: flex; justify-content: center; align-items: center; margin-bottom: 10px; }
+    .mining-gear { width: 38px; height: 38px; margin: 0 7px; animation: spin 1.5s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .miner-gif { display: block; margin: 0 auto 16px auto; max-width: 160px; border-radius: 12px; box-shadow: 0 2px 16px #0004; }
+    .bitcoin-png { display: block; margin: 0 auto 10px auto; max-width: 90px; filter: drop-shadow(0 0 12px #facc15cc);}
+    .mining-effect { text-align: center; margin-bottom: 12px; }
+    .mining-effect .spark { display: inline-block; width: 12px; height: 12px; background: #facc15; border-radius: 50%; margin: 0 2px; animation: blink 1.2s infinite alternate; }
+    .mining-effect .spark:nth-child(2) { animation-delay: 0.3s; }
+    .mining-effect .spark:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes blink { 0% { opacity: 1; } 100% { opacity: 0.2; } }
+    .mining-bar-wrap { background: #23232a; border-radius: 8px; margin: 0 auto 18px auto; padding: 10px 0 18px 0; max-width: 350px; }
+    .mining-bar-label { color: #facc15; font-size: 15px; text-align: center; margin-bottom: 4px; }
+    .mining-bar { width: 80%; margin: 0 auto; height: 18px; background: #18181b; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px #0002; }
+    .mining-bar-inner { height: 100%; width: 0; background: linear-gradient(90deg,#facc15 60%,#10b981 100%); border-radius: 10px; transition: width 1.2s cubic-bezier(.4,2,.6,1); }
+    .tab-btns { display: flex; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
+    .tab-btn { flex:1; padding: 10px 0; border-radius: 8px 8px 0 0; border: none; background: #18181b; color: #facc15; font-weight: bold; font-size: 15px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .tab-btn.active, .tab-btn:focus { background: #10b981; color: #fff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { padding: 7px 3px; text-align: center; border-bottom: 1px solid #374151; font-size: 14px; }
+    th { background: #18181b; color: #9ca3af; }
+    .notif { display:none; margin:10px 0; padding:10px; border-radius:7px; text-align:center; }
+    .notif.success { background: #22c55e; color: #fff; }
+    .notif.error { background: #ef4444; color: #fff; }
+    .total-profit-bar { background: #1e293b; border-radius: 8px; padding: 10px 0; margin-bottom: 16px; text-align: center; font-size: 17px; color: #facc15; font-weight: bold; box-shadow: 0 2px 8px #0002;}
+    @media (max-width:600px) {
+      .container { padding: 10px 2vw; }
+      .mining-img { max-width: 70px; }
+      .miner-gif { max-width: 90px; }
+      .bitcoin-png { max-width: 60px; }
+      .saldo-bar { flex-direction: column; gap: 6px; }
+      .saldo-label, .saldo-value { font-size: 15px; }
+      .mining-gear { width: 28px; height: 28px; }
+      .mining-bar-wrap { max-width: 98vw; }
+      .tab-btn { font-size: 13px; padding: 8px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+<!-- Header dan Menu -->
+<nav class="box" style="margin-bottom:16px; text-align:center; display:flex; justify-content:center; gap:24px;">
+  <a href="/" style="text-decoration:none; color:#facc15; font-weight:bold; display:flex; flex-direction:column; align-items:center; transition:transform 0.2s;">
+    <img src="https://cdn-icons-png.flaticon.com/128/1946/1946436.png" width="24" height="24" style="margin-bottom:4px;">
+    Home
+  </a>
+  <a href="/wallet/recharge" style="text-decoration:none; color:#facc15; font-weight:bold; display:flex; flex-direction:column; align-items:center; transition:transform 0.2s;">
+    <img src="https://images.icon-icons.com/1369/PNG/512/-account-balance-wallet_90203.png" width="24" height="24" style="margin-bottom:4px;">
+    Deposit
+  </a>
+  <a href="/wallet/withdrawal" style="text-decoration:none; color:#facc15; font-weight:bold; display:flex; flex-direction:column; align-items:center; transition:transform 0.2s;">
+    <img src="https://shopeepay.co.id/src/pages/home/assets/images/transfer_alt_icon.png" width="24" height="24" style="margin-bottom:4px;">
+    Withdraw
+  </a>
+</nav>
+
+    <!-- Saldo dan profit -->
+    <div class="saldo-bar">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwn0PGwqRGaWDU6uwUSX4zGdQO-PZKjdY6AQ&s" alt="Bitcoin" />
+      <span class="saldo-label">Saldo Anda:</span>
+      <span class="saldo-value" id="saldo">Rp 0</span>
+    </div>
+
+
+    <!-- Gambar & efek -->
+    <img class="bitcoin-png" src="https://pngimg.com/d/bitcoin_PNG47.png" alt="Koin Bitcoin" />
+    <div class="mining-effect">
+      <span class="spark"></span><span class="spark"></span><span class="spark"></span>
+    </div>  
+    <img class="miner-gif" src="https://media.giphy.com/media/3o7TKtnuHOHHUjR38Y/giphy.gif" alt="Penambang Bitcoin" />
+
+    <div class="mining-bar-wrap">
+      <div class="mining-bar-label">Progres Mining</div>
+      <div class="mining-bar"><div class="mining-bar-inner" id="miningBar"></div></div>
+    </div>
+    <div class="total-profit-bar">Total Profit Mining: <span id="totalProfit">Rp 0</span></div>
+    <h2>
+      <span class="mining-anim">
+        <img class="mining-gear" src="https://cdn-icons-png.flaticon.com/512/189/189792.png" alt="Gear" />
+        
+    <!-- Penggalian Bitcoin -->
+    <div style="display:flex;justify-content:center;align-items:center;margin-bottom:16px;">
+      <svg width="110" height="90" viewBox="0 0 110 90">
+        <!-- Koin Bitcoin -->
+        <circle cx="70" cy="60" r="22" fill="#facc15" stroke="#eab308" stroke-width="3"/>
+        <text x="70" y="67" text-anchor="middle" font-size="22" font-weight="bold" fill="#fff" font-family="Arial">฿</text>
+        <!-- Pickaxe -->
+        <g id="pickaxe" style="transform-origin:30px 40px;">
+          <rect x="28" y="25" width="6" height="35" rx="3" fill="#a3a3a3"/>
+          <rect x="20" y="23" width="22" height="7" rx="3.5" fill="#444"/>
+        </g>
+        <!-- Efek kilau -->
+        <ellipse id="shine" cx="70" cy="50" rx="7" ry="2" fill="#fff8" style="opacity:0;"/>
+      </svg>
+    </div>
+    
+    <img class="mining-gear" src="https://cdn-icons-png.flaticon.com/512/189/189792.png" alt="Gear" />
+      </span>
+    </h2>
+
+    <script>
+      // Animasi pickaxe memukul koin
+      let angle = 0, dir = 1;
+      function animatePickaxe() {
+        angle += dir * 6;
+        if (angle > 40) dir = -1;
+        if (angle < 0) dir = 1;
+        document.getElementById('pickaxe').setAttribute('transform',`rotate(${angle},30,40)`);
+        requestAnimationFrame(animatePickaxe);
+      }
+      animatePickaxe();
+
+      // Efek kilau pada koin setiap beberapa detik
+      setInterval(()=>{
+        const shine = document.getElementById('shine');
+        shine.style.opacity = 1;
+        shine.setAttribute('rx', 7);
+        setTimeout(()=>{
+          shine.style.opacity = 0;
+        }, 400);
+      }, 2200);
+    </script>
+
+    <!-- Form Sewa -->
+    <div class="box">
+      <div class="vip">VIP Level: <span id="vip">-</span></div>
+      <form id="sewaForm" autocomplete="off">
+        <label>Zona Room BTC (min Rp 100.000):</label>
+        <input type="number" id="amount" min="100000" step="1000" value="100000" required>
+        <div class="info" id="cashbackInfo"></div>
+        <button type="submit">Start Mining</button>
+      </form>
+      <div class="notif" id="notif"></div>
+    </div>
+
+    <!-- Status aktif -->
+    <div class="box" id="statusBox" style="display:none;">
+      <b>Mining Aktif</b>
+      <div>Nominal: <span id="activeAmount"></span></div>
+      <div>Cashback: <span id="activeCashback"></span></div>
+      <div>Mulai: <span id="activeStart"></span></div>
+      <div>Selesai: <span id="activeEnd"></span></div>
+      <div>Sisa Hari: <span id="activeSisa"></span></div>
+      <div>Total Profit: <span id="activeProfit"></span></div>
+    </div>
+
+<!-- Tab Navigasi -->
+<div class="tab-btns" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+  <button class="tab-btn active" id="btnProfit" onclick="showTab('profit')" style="flex: 1; max-width: 140px;">Catatan</button>
+  <button class="tab-btn" id="btnInvest" onclick="showTab('invest')" style="flex: 1; max-width: 140px;">Riwayat BTC</button>
+</div>
+
+<div class="box tab-content active" id="tabProfit">
+  <div id="profitHistory"></div>
+</div>
+<div class="box tab-content" id="tabInvest">
+  <div id="investHistory"></div>
+</div>
+
+
+  <script>
+    // Efek mining: gear animasi & blink profit
+    function blinkProfit() {
+      const el = document.getElementById('totalProfit');
+      if (!el) return;
+      el.style.transition = 'color 0.2s';
+      el.style.color = '#22c55e';
+      setTimeout(()=>{ el.style.color = '#facc15'; }, 300);
+    }
+    function rupiah(x) {
+      return 'Rp ' + (x||0).toLocaleString('id-ID');
+    }
+
+    // Mining bar berjalan otomatis
+    let miningBarProgress = 0;
+    function animateMiningBar() {
+      miningBarProgress += Math.random() * 10 + 5;
+      if (miningBarProgress > 100) miningBarProgress = 0;
+      document.getElementById('miningBar').style.width = miningBarProgress + '%';
+      setTimeout(animateMiningBar, 800);
+    }
+    animateMiningBar();
+
+    // Tab navigasi
+    function showTab(tab) {
+      document.getElementById('btnProfit').classList.remove('active');
+      document.getElementById('btnInvest').classList.remove('active');
+      document.getElementById('tabProfit').classList.remove('active');
+      document.getElementById('tabInvest').classList.remove('active');
+      if(tab === 'profit') {
+        document.getElementById('btnProfit').classList.add('active');
+        document.getElementById('tabProfit').classList.add('active');
+      } else {
+        document.getElementById('btnInvest').classList.add('active');
+        document.getElementById('tabInvest').classList.add('active');
+      }
+    }
+
+    document.getElementById('amount').oninput = function() {
+      let val = parseInt(this.value) || 0;
+      document.getElementById('cashbackInfo').innerText = (val >= 1000000) ? 'Cashback 10%: ' + rupiah(Math.floor(val*0.1)) : '';
+    };
+
+    document.getElementById('sewaForm').onsubmit = function(e) {
+      e.preventDefault();
+      let amount = parseInt(document.getElementById('amount').value) || 0;
+      if (amount < 100000) return showNotif('Minimal sewa 100.000', 'error');
+      fetch('/mining/sewa', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({amount})
+      }).then(res=>res.json()).then(d=>{
+        showNotif(d.message, d.status ? 'success' : 'error');
+        if (d.status) {
+          fetchAll();
+          document.getElementById('sewaForm').reset();
+          document.getElementById('cashbackInfo').innerText = '';
+        }
+      });
+    };
+
+    function showNotif(msg, type) {
+      let notif = document.getElementById('notif');
+      notif.innerText = msg;
+      notif.className = 'notif ' + (type||'');
+      notif.style.display = 'block';
+      setTimeout(()=>{ notif.style.display='none'; }, 3000);
+    }
+
+    function fetchSaldo() {
+      fetch('/api/saldo').then(res=>res.json()).then(data=>{
+        document.getElementById('saldo').innerText = rupiah(data.saldo);
+      });
+    }
+
+    function fetchAll() {
+      fetchSaldo();
+      fetch('/mining/status').then(res=>res.json()).then(data=>{
+        document.getElementById('vip').innerText = data.vip;
+        if (data.active) {
+          document.getElementById('statusBox').style.display = '';
+          document.getElementById('activeAmount').innerText = rupiah(data.active.amount);
+          document.getElementById('activeCashback').innerText = rupiah(data.active.cashback);
+          document.getElementById('activeStart').innerText = new Date(data.active.start_time).toLocaleString('id-ID');
+          document.getElementById('activeEnd').innerText = new Date(data.active.end_time).toLocaleString('id-ID');
+          document.getElementById('activeSisa').innerText = Math.max(0, Math.ceil((new Date(data.active.end_time) - new Date())/1000/60/60/24)) + ' hari';
+          document.getElementById('activeProfit').innerText = rupiah(data.active.total_profit);
+        } else {
+          document.getElementById('statusBox').style.display = 'none';
+        }
+      });
+
+      fetch('/mining/history').then(res=>res.json()).then(data=>{
+        let html = `<table><tr><th>Waktu</th><th>Profit</th></tr>`;
+        let totalProfit = 0;
+        (data.profits||[]).forEach(p=>{
+          html += `<tr><td>${new Date(p.profit_time).toLocaleString('id-ID')}</td><td>${rupiah(p.profit)}</td></tr>`;
+          totalProfit += (p.profit||0);
+        });
+        html += '</table>';
+        document.getElementById('profitHistory').innerHTML = html;
+        document.getElementById('totalProfit').innerText = rupiah(totalProfit);
+        blinkProfit();
+
+        let html2 = `<table><tr><th>Nominal</th><th>Cashback</th><th>Mulai</th><th>Selesai</th><th>Status</th><th>Total Profit</th></tr>`;
+        (data.invests||[]).forEach(i=>{
+          html2 += `<tr>
+            <td>${rupiah(i.amount)}</td>
+            <td>${rupiah(i.cashback)}</td>
+            <td>${new Date(i.start_time).toLocaleDateString('id-ID')}</td>
+            <td>${new Date(i.end_time).toLocaleDateString('id-ID')}</td>
+            <td>${i.status}</td>
+            <td>${rupiah(i.total_profit)}</td>
+          </tr>`;
+        });
+        html2 += '</table>';
+        document.getElementById('investHistory').innerHTML = html2;
+      });
+    }
+
+    fetchAll();
+    setInterval(fetchAll, 10000);
+  </script>
+       <script>
+      const BTC_RATE = 1000000000; // contoh: 1 BTC = Rp 1.000.000.000
+
+      function formatBTC(rp) {
+        return (rp / BTC_RATE).toFixed(8) + ' BTC';
+      }
+
+      function updateBTCProfitView() {
+        let profitText = document.getElementById('totalProfit').innerText.replace(/Rp\s?/g, '').replace(/\./g,'');
+        let profitValue = parseInt(profitText) || 0;
+        let btc = formatBTC(profitValue);
+        let btcDisplay = document.getElementById('btcDisplay');
+        if (!btcDisplay) {
+          let span = document.createElement('div');
+          span.id = 'btcDisplay';
+          span.style = 'margin-top:4px;font-size:14px;color:#22c55e;';
+          document.querySelector('.total-profit-bar').appendChild(span);
+          btcDisplay = span;
+        }
+        btcDisplay.innerText = btc;
+      }
+
+      setInterval(updateBTCProfitView, 10000);
+    </script> 
+</body>
+</html>

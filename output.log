@@ -1,0 +1,11 @@
+nohup: ignoring input
+Traceback (most recent call last):
+  File "/www/tiranga/prediksi.py", line 243, in <module>
+    asyncio.run(main())  # Jalankan logika utama dengan asyncio
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/www/tiranga/prediksi.py", line 128, in main
+    next_bet_type = ["BESAR", "KECIL", "BESAR", "KECIL", "KECIL", "KECIL", "BESAR"][random.randint(0, 7)]  # Set jenis taruhan pertama secara acak jika Besar atau Kecil sudah keluar lebih 3 kali maka taruhan akan berubah menjadi yang lain jika masih sama ikuti pola yang keluar lebih banyak
+IndexError: list index out of range

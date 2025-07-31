@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Green Game</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #111827 60%, #10b981 100%);
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1f2937;
+      padding: 18px 24px;
+      border-bottom: 2px solid #374151;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .saldo {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .deposit-btn {
+      background: linear-gradient(90deg, #10b981 60%, #34d399 100%);
+      border: none;
+      color: white;
+      padding: 10px 22px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+    .deposit-btn:hover {
+      background: #059669;
+    }
+    .main-content {
+      padding: 28px 12px 24px 12px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .info-bar {
+      text-align: center;
+      font-size: 17px;
+      margin-bottom: 22px;
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #0001;
+    }
+    .rolling-row {
+      text-align: center;
+      margin-bottom: 26px;
+    }
+    .rolling-center-arrow {
+      width: 0;
+      height: 0;
+      margin: 0 auto 12px;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-bottom: 24px solid #facc15;
+    }
+    .rolling-numbers-scroll {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      overflow-x: auto;
+    }
+    .rolling-num {
+      width: 44px;
+      height: 44px;
+      line-height: 44px;
+      border-radius: 10px;
+      font-weight: bold;
+      text-align: center;
+      background: #1f2937;
+      font-size: 19px;
+      box-shadow: 0 2px 8px #0001;
+      transition: background 0.2s, color 0.2s;
+    }
+    .rolling-num.green { background: #10b981; color: white; }
+    .rolling-num.red { background: #ef4444; color: white; }
+    .rolling-num.black { background: #374151; color: white; }
+    .rolling-num.center {
+      border: 2.5px solid #facc15;
+      box-shadow: 0 0 0 3px #facc1533;
+    }
+    .bet-form-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .bet-color-row,
+    .bet-amount-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .bet-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 90px;
+      font-size: 15px;
+      box-shadow: 0 2px 8px #0001;
+      transition: outline 0.2s;
+    }
+    .bet-btn.green { background: #10b981; color: white; }
+    .bet-btn.red { background: #ef4444; color: white; }
+    .bet-btn.black { background: #374151; color: white; }
+    .bet-btn.bet-main { background: #6366f1; color: #fff; min-width: 100px; }
+    .quick-bet-btn {
+      padding: 7px 13px;
+      background: #6b7280;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 2px 8px #0001;
+    }
+    #amount {
+      width: 110px;
+      padding: 7px;
+      border-radius: 7px;
+      border: 1.5px solid #4b5563;
+      background: #111827;
+      color: white;
+      text-align: center;
+      font-size: 15px;
+    }
+    .tab-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 9px 18px;
+      background: #374151;
+      border: none;
+      border-radius: 7px;
+      color: #d1d5db;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .tab-btn.active {
+      background: #6366f1;
+      color: white;
+    }
+    .tab-content {
+      padding: 13px 7px;
+      background: #1f2937;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #0001;
+    }
+    .table-riwayat {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 0;
+    }
+    .table-riwayat th, .table-riwayat td {
+      padding: 9px 4px;
+      text-align: center;
+      border-bottom: 1px solid #374151;
+      font-size: 15px;
+    }
+    .table-riwayat th {
+      background: #111827;
+      color: #9ca3af;
+      font-weight: 600;
+    }
+    .number.green { color: #10b981; font-weight: bold; }
+    .number.red { color: #ef4444; font-weight: bold; }
+    .number.black { color: #9ca3af; font-weight: bold; }
+    .notif {
+      display: none;
+      padding: 12px;
+      margin: 12px auto;
+      text-align: center;
+      border-radius: 8px;
+      width: 95%;
+      font-size: 15px;
+      box-shadow: 0 2px 8px #0001;
+    }
+    .notif.success { background: #22c55e; color: white; }
+    .notif.error { background: #ef4444; color: white; }
+    .bonus {
+      margin-top: 22px;
+      text-align: center;
+      font-size: 17px;
+      color: #facc15;
+      font-weight: 600;
+    }
+    @media screen and (max-width: 600px) {
+      .main-content { padding: 10px 2vw 18px 2vw; }
+      .bet-form-row { flex-direction: column; gap: 10px; }
+      .bet-color-row, .bet-amount-row { width: 100%; justify-content: center; gap: 8px; }
+      #amount { width: 100%; max-width: 140px; }
+      .quick-bet-btn, .bet-btn { min-width: 70px; font-size: 13px; }
+      .tab-btn { padding: 7px 10px; font-size: 13px; }
+      .table-riwayat th, .table-riwayat td { padding: 6px 2px; font-size: 13px; }
+      .rolling-num { width: 32px; height: 32px; line-height: 32px; font-size: 13px; }
+      .rolling-center-arrow { border-left-width: 12px; border-right-width: 12px; border-bottom-width: 16px; }
+    }
+  </style>
+
+</head>
+<body>
+  <div class="header-bar">
+    <div class="saldo">Saldo: Rp <span id="saldo"><%= saldo.toLocaleString() %></span></div>
+    <button class="deposit-btn" onclick="location.href='/recharge'">Deposit</button>
+  </div>
+  <div class="main-content">
+    <div class="info-bar">
+      <span>Periode: <span id="period"></span></span> | 
+      <span>Sisa: <span id="countdown"></span> detik</span>
+    </div>
+    <div class="rolling-row" id="rolling-row">
+      <!-- Arrow and numbers will be rendered by JS -->
+    </div>
+<form id="betForm" autocomplete="off">
+  <div class="bet-form-row">
+    <div class="bet-color-row">
+      <button type="button" class="bet-btn green" data-type="green">Green x30</button>
+      <button type="button" class="bet-btn red" data-type="red">Red x2</button>
+      <button type="button" class="bet-btn black" data-type="black">Black x2</button>
+    </div>
+    <div class="bet-amount-row">
+      <input type="number" id="amount" min="1000" value="1000" required>
+      <button type="button" class="quick-bet-btn" data-mult="2">2x</button>
+      <button type="button" class="quick-bet-btn" data-mult="3">3x</button>
+      <button type="button" class="quick-bet-btn" data-mult="5">5x</button>
+      <button type="button" class="quick-bet-btn" data-mult="10">10x</button>
+      <button type="button" class="quick-bet-btn" data-mult="half">1/2</button>
+      <button type="button" class="quick-bet-btn" data-mult="all">All In</button>
+      <button type="submit" class="submit-btn" style="background:#6366f1;color:#fff;">Bet</button>
+    </div>
+  </div>
+</form>
+
+    </form>
+    <div class="notif" id="notif"></div>
+    <div class="tab-row">
+      <button class="tab-btn active" id="btn-riwayat-game">Game</button>
+      <button class="tab-btn" id="btn-riwayat-taruhan">Taruhan</button>
+      <button class="tab-btn" id="btn-riwayat-bonus">Harian Bonus</button>
+    </div>
+    <div class="tab-content">
+      <div id="tab-riwayat-game"></div>
+      <div id="tab-riwayat-taruhan" style="display:none"></div>
+      <div id="tab-riwayat-bonus" style="display:none"></div>
+    </div>
+    <div class="bonus" id="bonus"></div>
+  </div>
+  <script>
+    // Tab logic
+    document.getElementById('btn-riwayat-game').onclick = function() { setActiveTab('game'); };
+    document.getElementById('btn-riwayat-taruhan').onclick = function() { setActiveTab('taruhan'); };
+    document.getElementById('btn-riwayat-bonus').onclick = function() { setActiveTab('bonus'); };
+    function setActiveTab(tab) {
+      document.getElementById('btn-riwayat-game').classList.remove('active');
+      document.getElementById('btn-riwayat-taruhan').classList.remove('active');
+      document.getElementById('btn-riwayat-bonus').classList.remove('active');
+      document.getElementById('tab-riwayat-game').style.display = 'none';
+      document.getElementById('tab-riwayat-taruhan').style.display = 'none';
+      document.getElementById('tab-riwayat-bonus').style.display = 'none';
+      if(tab==='game') {
+        document.getElementById('btn-riwayat-game').classList.add('active');
+        document.getElementById('tab-riwayat-game').style.display = '';
+      } else if(tab==='taruhan') {
+        document.getElementById('btn-riwayat-taruhan').classList.add('active');
+        document.getElementById('tab-riwayat-taruhan').style.display = '';
+      } else {
+        document.getElementById('btn-riwayat-bonus').classList.add('active');
+        document.getElementById('tab-riwayat-bonus').style.display = '';
+      }
+    }
+
+    // Rolling angka 1-30 dengan panah besar di tengah
+    let interval, rolling = false, rollingPos = 0, rollingResult = 0, rollingColor = '';
+    const ROLL_VISIBLE = 7; // jumlah angka yang terlihat (harus ganjil, tengah = result)
+    function renderRolling(activeNum, color, showArrow) {
+      // Tentukan posisi tengah
+      const centerIdx = Math.floor(ROLL_VISIBLE / 2);
+      let numbers = [];
+      // Buat urutan angka, resultNum di tengah
+      for (let i = -centerIdx; i <= centerIdx; i++) {
+        let idx = (activeNum + i + 31) % 31;
+        let col = idx === 0 ? 'green' : ([1,3,5,7,9,11,13,15,17,19,21,23,25,27,29].includes(idx) ? 'red' : 'black');
+        numbers.push({num: idx, col});
+      }
+      let html = '';
+      if (showArrow) {
+        html += `<div class="rolling-center-arrow"></div>`;
+      } else {
+        html += `<div style="height:28px"></div>`;
+      }
+      html += `<div class="rolling-numbers-scroll">`;
+      numbers.forEach((item, i) => {
+        html += `<div class="rolling-num ${item.col}${i===centerIdx?' center':''}">${item.num}</div>`;
+      });
+      html += `</div>`;
+      document.getElementById('rolling-row').innerHTML = html;
+    }
+    function fetchStatus() {
+      fetch('/green/status').then(res=>res.json()).then(data=>{
+        document.getElementById('period').innerText = data.period;
+        document.getElementById('countdown').innerText = data.countdown;
+        if (!rolling && data.countdown <= 2) startRolling(data.result_num, data.color);
+        if (data.countdown > 2) stopRolling(data.result_num, data.color);
+        renderGameHistory(data.history);
+        renderTaruhan(data.betHistory || []);
+        renderBonusHistory(data.bonusHistory || []);
+        renderBonus(data.bonus);
+      });
+    }
+    function startRolling(resultNum, color) {
+      rolling = true;
+      let pos = Math.floor(Math.random() * 31);
+      interval = setInterval(()=>{
+        pos = (pos+1)%31;
+        renderRolling(pos, '', false);
+      }, 40);
+      setTimeout(()=>stopRolling(resultNum, color), 1200);
+    }
+    function stopRolling(num, color) {
+      if (interval) clearInterval(interval);
+      renderRolling(num, color, true);
+      rolling = false;
+    }
+
+    // Quick bet
+    document.querySelectorAll('.quick-bet-btn').forEach(btn=>{
+      btn.onclick = function(){
+        let amount = parseInt(document.getElementById('amount').value) || 1000;
+        let saldo = parseInt(document.getElementById('saldo').innerText.replace(/\D/g,'')) || 0;
+        let mult = btn.dataset.mult;
+        if(mult==='half') amount = Math.floor(saldo/2/1000)*1000;
+        else if(mult==='all') amount = saldo;
+        else amount = amount * parseInt(mult);
+        if(amount < 1000) amount = 1000;
+        document.getElementById('amount').value = amount;
+      }
+    });
+
+    // Pilih warna
+    document.querySelectorAll('.bet-btn').forEach(btn=>{
+      btn.onclick = function(){
+        document.querySelectorAll('.bet-btn').forEach(b=>b.style.outline='none');
+        btn.style.outline='2px solid #6366f1';
+        document.getElementById('betForm').dataset.type = btn.dataset.type;
+      }
+    });
+
+    // Submit bet
+    document.getElementById('betForm').onsubmit = function(e){
+      e.preventDefault();
+      let betType = this.dataset.type || 'green';
+      let amount = document.getElementById('amount').value;
+      fetch('/green/bet', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({betType, amount})
+      }).then(res=>res.json()).then(d=>{
+        showNotif(d.message, d.status!==false ? 'success' : 'error');
+        fetchStatus();
+      }).catch(()=>{
+        showNotif('Terjadi kesalahan koneksi.', 'error');
+      });
+    }
+
+    function showNotif(msg, type) {
+      let notif = document.getElementById('notif');
+      notif.innerText = msg;
+      notif.className = 'notif ' + (type||'');
+      notif.style.display = 'block';
+      setTimeout(()=>{ notif.style.display='none'; }, 3000);
+    }
+
+    // Riwayat & saldo
+    function renderGameHistory(history) {
+      let html = `<table class="table-riwayat"><tr>
+        <th>Periode</th><th>Angka</th><th>Warna</th>
+      </tr>`;
+      history.forEach(h=>{
+        html += `<tr>
+          <td>${h.period}</td>
+          <td><span class="number ${h.color}">${h.result_num}</span></td>
+          <td><span class="number ${h.color}">${h.color[0].toUpperCase()}</span></td>
+        </tr>`;
+      });
+      html += '</table>';
+      document.getElementById('tab-riwayat-game').innerHTML = html;
+    }
+function renderTaruhan(bets) {
+  let html = `<div style="overflow-x:auto;"><table class="table-riwayat"><tr>
+    <th>Periode</th><th>Taruhan</th><th>Jumlah</th><th>Status</th><th>Menang</th>
+  </tr>`;
+  bets.forEach(b => {
+    html += `<tr>
+      <td>${b.period}</td>
+      <td>${b.bet_color}</td>
+      <td>Rp ${b.bet_amount.toLocaleString()}</td>
+      <td>$</td>
+      <td>${b.result_num !== null && b.bet_color === b.color ? calculateWin(b.bet_color, b.bet_amount).toLocaleString('id-ID') : '-'}</td>
+    </tr>`;
+  });
+  html += `</table></div>`;
+  document.getElementById('tab-riwayat-taruhan').innerHTML = html;
+}
+
+function calculateWin(type, amount) {
+  if (type === 'green') return amount * 30;
+  if (type === 'red' || type === 'black') return amount * 2;
+  return 0;
+}
+
+    function renderBonusHistory(bonusHistory) {
+      let html = `<table class="table-riwayat"><tr>
+        <th>Tanggal</th><th>Bonus</th>
+      </tr>`;
+      bonusHistory.forEach(b=>{
+        html += `<tr>
+          <td>${b.tanggal}</td>
+          <td>Rp ${b.bonus.toLocaleString()}</td>
+        </tr>`;
+      });
+      html += '</table>';
+      document.getElementById('tab-riwayat-bonus').innerHTML = html;
+    }
+    function renderBonus(bonus) {
+      document.getElementById('bonus').innerText = bonus ? `Bonus TO hari ini: Rp ${bonus.toLocaleString()}` : '';
+    }
+    function fetchSaldo() {
+      fetch('/api/saldo').then(res=>res.json()).then(data=>{
+        document.getElementById('saldo').innerText = data.saldo.toLocaleString();
+      });
+    }
+    setInterval(fetchStatus, 1000);
+    fetchStatus();
+    setInterval(fetchSaldo, 5000);
+    fetchSaldo();
+    setActiveTab('game');
+    // Inisialisasi rolling awal
+    renderRolling(0, '', false);
+  </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: #fff;
+  text-align: center;
+  margin-top: 50px;
+}
+.login-box, .container {
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  margin: auto;
+}
+input, select, button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+}
+button {
+  background: crimson;
+  color: white;
+  cursor: pointer;
+}
+.error {
+  color: red;
+}

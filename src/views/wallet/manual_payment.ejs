@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manual UPI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"
+        integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <style>
+        /* CSS Anda tetap sama */
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #770eee54;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #2d0ac98a;
+            padding: 6px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 12px;
+            margin: 15px 10px;
+        }
+
+        footer {
+            background-color: #2d0ac98a;
+            padding: 6px;
+            text-align: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            margin: 0px 10px;
+            margin-top: auto;
+        }
+
+        .tutorial_root {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #2d0ac98a;
+            padding: 0px 25px 20px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 12px;
+            margin: 15px 10px;
+        }
+
+        .tutorial_content p {
+            display: flex;
+            gap: 6px;
+        }
+
+        .tutorial_content p strong {
+            white-space: nowrap;
+        }
+
+        @media (min-width: 500px) {
+            .tutorial_root {
+                padding: 0px 20px 20px;
+            }
+        }
+
+        .upi_display_root {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #2d0ac98a;
+            padding: 0px 25px 20px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 12px;
+            margin: 15px 10px;
+        }
+
+        .upi_display_root h2 {
+            margin: 20px 0px 5px;
+            font-weight: 600;
+        }
+
+        .upi_display_content {
+            margin-top: 10px;
+            padding: 10px 13px;
+            border-radius: 9px;
+            border: 1px solid #800707;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .upi_display_content p {
+            display: flex;
+            gap: 6px;
+        }
+
+        .upi_display_content p strong {
+            white-space: nowrap;
+        }
+
+        .upi_display_content__img {
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .verification_form__root {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            /* align-items: center; */
+            background: #2d0ac98a;
+            padding: 10px 25px 25px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 12px;
+            margin: 15px 10px;
+        }
+
+        .verification_form__root label {
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .verification_form__root input {
+            margin-top: 10px;
+            padding: 10px 13px;
+            border-radius: 9px;
+            border: 1px solid #cccccc;
+            font-size: 14px;
+        }
+
+        .verification_form__root input::placeholder {
+            font-size: 14px;
+        }
+
+        .verification_form__root button {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 9px;
+            border: 1px solid #f34040a4a;
+            background-color: #2d0ac98a;
+            background: #22275b;
+
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .upi_pay_now {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 9px;
+            border: 1px solid #cccccc;
+            background-color: #1c4ff7;
+            background: #2d0ac98a;
+            font-weight: 500;
+            color: rgb(255, 255, 255);
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        div#copy_message {
+            background: cornflowerblue;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Tambahan CSS untuk QRIS */
+        .qris_section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #2d0ac98a;
+            padding: 20px;
+            margin: 15px 10px;
+            border-radius: 12px;
+        }
+
+        .qris_section h3 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .qris_section img {
+            width: 250px; /* Sesuaikan ukuran sesuai kebutuhan */
+            height: 250px;
+            border: 1px solid #181313;
+            padding: 10px;
+            background: white;
+        }
+        .qris-container img {
+    max-width: 100%;
+    height: auto;
+    width: 300px; /* Sesuaikan ukuran QRIS */
+    display: block;
+    margin: 0 auto;
+}
+
+.bubble-message {
+    background-color: #fef4e8;
+    color: #d9534f;
+    padding: 1px;
+    border-radius: 25px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    max-width: 1000%;
+    margin: 20px auto;
+}
+
+
+@media (max-width: 868px) {
+    .qris-container img {
+        width: 300px; /* Ukuran lebih kecil di HP */
+    }
+}
+
+    </style>
+    <div id="depositNotice" class="deposit-notif">
+  ⚠️ Harap isi <strong>Kode Referensi QRIS</strong> atau <strong>Nomor Rekening E-Wallet</strong> saat melakukan deposit!
+  <button onclick="closeNotice()">Paham</button>
+</div>
+
+<style>
+.deposit-notif {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ffcc00;
+  color: #000;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  z-index: 9999;
+  max-width: 300px;
+  animation: fadeIn 0.5s ease;
+}
+.deposit-notif button {
+  margin-top: 10px;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+</head>
+
+<body>
+    <main>
+        <header>
+            <h2>ISI ULANG</h2>
+        </header>
+<body>
+<span id="countdown">20:00</span>
+
+<script>
+function closeNotice() {
+  document.getElementById('depositNotice').style.display = 'none';
+}
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let countdownElement = document.getElementById("countdown");
+    let totalTime = 20 * 60; // 20 menit dalam detik
+
+    function updateCountdown() {
+        let minutes = Math.floor(totalTime / 60);
+        let seconds = totalTime % 60;
+        countdownElement.textContent = 
+            (minutes < 10 ? "0" : "") + minutes + ":" + 
+            (seconds < 10 ? "0" : "") + seconds;
+        totalTime--;
+
+        if (totalTime < 0) {
+            clearInterval(timer);
+            countdownElement.textContent = "00:00"; // Habis waktu
+        }
+    }
+
+    updateCountdown(); // Tampilkan waktu awal langsung
+    let timer = setInterval(updateCountdown, 1000); // Update tiap detik
+});
+</script>
+</body>
+        <!-- Bagian UPI ID -->
+        <div class="upi_display_root">
+            <h2 class="upi_display_title">
+                Kirim Rp <span id="display_amount">
+                    <%=Amount%>
+                </h2>
+                <div class="bubble-message">
+    <h3>"Deposit 1jt ke atas? Transfer ke bank ya!" 🚀</h3>
+</div>
+
+            <button class="upi_display_content" id="copy_upi_id_1">
+                <p>
+                    <strong>SEABANK: </strong>
+                    <span id="upi_id_field_1">
+                        <%=901542092797%>
+                    </span>
+
+                    <img class="upi_display_content__img"
+                        src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTE1Ljc3IDEyMi44OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTE1Ljc3IDEyMi44OCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO308L3N0eWxlPjxnPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik04OS42MiwxMy45NnY3LjczaDEyLjE5aDAuMDF2MC4wMmMzLjg1LDAuMDEsNy4zNCwxLjU3LDkuODYsNC4xYzIuNSwyLjUxLDQuMDYsNS45OCw0LjA3LDkuODJoMC4wMnYwLjAyIHY3My4yN3YwLjAxaC0wLjAyYy0wLjAxLDMuODQtMS41Nyw3LjMzLTQuMSw5Ljg2Yy0yLjUxLDIuNS01Ljk4LDQuMDYtOS44Miw0LjA3djAuMDJoLTAuMDJoLTYxLjdINDAuMXYtMC4wMiBjLTMuODQtMC4wMS03LjM0LTEuNTctOS44Ni00LjFjLTIuNS0yLjUxLTQuMDYtNS45OC00LjA3LTkuODJoLTAuMDJ2LTAuMDJWOTIuNTFIMTMuOTZoLTAuMDF2LTAuMDJjLTMuODQtMC4wMS03LjM0LTEuNTctOS44Ni00LjEgYy0yLjUtMi41MS00LjA2LTUuOTgtNC4wNy05LjgySDB2LTAuMDJWMTMuOTZ2LTAuMDFoMC4wMmMwLjAxLTMuODUsMS41OC03LjM0LDQuMS05Ljg2YzIuNTEtMi41LDUuOTgtNC4wNiw5LjgyLTQuMDdWMGgwLjAyaDYxLjcgaDAuMDF2MC4wMmMzLjg1LDAuMDEsNy4zNCwxLjU3LDkuODYsNC4xYzIuNSwyLjUxLDQuMDYsNS45OCw0LjA3LDkuODJoMC4wMlYxMy45NnogTTc5LjA0LDIxLjY5di03Ljczdi0wLjAyaDAuMDIgYzAtMC45MS0wLjM5LTEuNzUtMS4wMS0yLjM3Yy0wLjYxLTAuNjEtMS40Ni0xLTIuMzctMXYwLjAyaC0wLjAxaC02MS43aC0wLjAydi0wLjAyYy0wLjkxLDAtMS43NSwwLjM5LTIuMzcsMS4wMSBjLTAuNjEsMC42MS0xLDEuNDYtMSwyLjM3aDAuMDJ2MC4wMXY2NC41OXYwLjAyaC0wLjAyYzAsMC45MSwwLjM5LDEuNzUsMS4wMSwyLjM3YzAuNjEsMC42MSwxLjQ2LDEsMi4zNywxdi0wLjAyaDAuMDFoMTIuMTlWMzUuNjUgdi0wLjAxaDAuMDJjMC4wMS0zLjg1LDEuNTgtNy4zNCw0LjEtOS44NmMyLjUxLTIuNSw1Ljk4LTQuMDYsOS44Mi00LjA3di0wLjAyaDAuMDJINzkuMDRMNzkuMDQsMjEuNjl6IE0xMDUuMTgsMTA4LjkyVjM1LjY1di0wLjAyIGgwLjAyYzAtMC45MS0wLjM5LTEuNzUtMS4wMS0yLjM3Yy0wLjYxLTAuNjEtMS40Ni0xLTIuMzctMXYwLjAyaC0wLjAxaC02MS43aC0wLjAydi0wLjAyYy0wLjkxLDAtMS43NSwwLjM5LTIuMzcsMS4wMSBjLTAuNjEsMC42MS0xLDEuNDYtMSwyLjM3aDAuMDJ2MC4wMXY3My4yN3YwLjAyaC0wLjAyYzAsMC45MSwwLjM5LDEuNzUsMS4wMSwyLjM3YzAuNjEsMC42MSwxLjQ2LDEsMi4zNywxdi0wLjAyaDAuMDFoNjEuN2gwLjAyIHYwLjAyYzAuOTEsMCwxLjc1LTAuMzksMi4zNy0xLjAxYzAuNjEtMC42MSwxLTEuNDYsMS0yLjM3aC0wLjAyVjEwOC45MkwxMDUuMTgsMTA4LjkyeiIvPjwvZz48L3N2Zz4="
+                        alt="copy upi id" />
+                </p>
+            </button>
+
+            <button class="upi_display_content" id="copy_upi_id_1">
+                <p>
+                    <strong>BANK JAGO: </strong>
+                    <span id="upi_id_field_1">
+                        <%=UpiIdb%>
+                    </span>
+
+                    <img class="upi_display_content__img"
+                        src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTE1Ljc3IDEyMi44OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTE1Ljc3IDEyMi44OCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO308L3N0eWxlPjxnPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik04OS42MiwxMy45NnY3LjczaDEyLjE5aDAuMDF2MC4wMmMzLjg1LDAuMDEsNy4zNCwxLjU3LDkuODYsNC4xYzIuNSwyLjUxLDQuMDYsNS45OCw0LjA3LDkuODJoMC4wMnYwLjAyIHY3My4yN3YwLjAxaC0wLjAyYy0wLjAxLDMuODQtMS41Nyw3LjMzLTQuMSw5Ljg2Yy0yLjUxLDIuNS01Ljk4LDQuMDYtOS44Miw0LjA3djAuMDJoLTAuMDJoLTYxLjdINDAuMXYtMC4wMiBjLTMuODQtMC4wMS03LjM0LTEuNTctOS44Ni00LjFjLTIuNS0yLjUxLTQuMDYtNS45OC00LjA3LTkuODJoLTAuMDJ2LTAuMDJWOTIuNTFIMTMuOTZoLTAuMDF2LTAuMDJjLTMuODQtMC4wMS03LjM0LTEuNTctOS44Ni00LjEgYy0yLjUtMi41MS00LjA2LTUuOTgtNC4wNy05LjgySDB2LTAuMDJWMTMuOTZ2LTAuMDFoMC4wMmMwLjAxLTMuODUsMS41OC03LjM0LDQuMS05Ljg2YzIuNTEtMi41LDUuOTgtNC4wNiw5LjgyLTQuMDdWMGgwLjAyaDYxLjcgaDAuMDF2MC4wMmMzLjg1LDAuMDEsNy4zNCwxLjU3LDkuODYsNC4xYzIuNSwyLjUxLDQuMDYsNS45OCw0LjA3LDkuODJoMC4wMlYxMy45NnogTTc5LjA0LDIxLjY5di03Ljczdi0wLjAyaDAuMDIgYzAtMC45MS0wLjM5LTEuNzUtMS4wMS0yLjM3Yy0wLjYxLTAuNjEtMS40Ni0xLTIuMzctMXYwLjAyaC0wLjAxaC02MS43aC0wLjAydi0wLjAyYy0wLjkxLDAtMS43NSwwLjM5LTIuMzcsMS4wMSBjLTAuNjEsMC42MS0xLDEuNDYtMSwyLjM3aDAuMDJ2MC4wMXY2NC41OXYwLjAyaC0wLjAyYzAsMC45MSwwLjM5LDEuNzUsMS4wMSwyLjM3YzAuNjEsMC42MSwxLjQ2LDEsMi4zNywxdi0wLjAyaDAuMDFoMTIuMTlWMzUuNjUgdi0wLjAxaDAuMDJjMC4wMS0zLjg1LDEuNTgtNy4zNCw0LjEtOS44NmMyLjUxLTIuNSw1Ljk4LTQuMDYsOS44Mi00LjA3di0wLjAyaDAuMDJINzkuMDRMNzkuMDQsMjEuNjl6IE0xMDUuMTgsMTA4LjkyVjM1LjY1di0wLjAyIGgwLjAyYzAtMC45MS0wLjM5LTEuNzUtMS4wMS0yLjM3Yy0wLjYxLTAuNjEtMS40Ni0xLTIuMzctMXYwLjAyaC0wLjAxaC02MS43aC0wLjAydi0wLjAyYy0wLjkxLDAtMS43NSwwLjM5LTIuMzcsMS4wMSBjLTAuNjEsMC42MS0xLDEuNDYtMSwyLjM3aDAuMDJ2MC4wMXY3My4yN3YwLjAyaC0wLjAyYzAsMC45MSwwLjM5LDEuNzUsMS4wMSwyLjM3YzAuNjEsMC42MSwxLjQ2LDEsMi4zNywxdi0wLjAyaDAuMDFoNjEuN2gwLjAyIHYwLjAyYzAuOTEsMCwxLjc1LTAuMzksMi4zNy0xLjAxYzAuNjEtMC42MSwxLTEuNDYsMS0yLjM3aC0wLjAyVjEwOC45MkwxMDUuMTgsMTA4LjkyeiIvPjwvZz48L3N2Zz4="
+                        alt="copy upi id" />
+                </p>
+            </button>
+            <button class="upi_display_content" id="copy_upi_id_2">
+                <p>
+                    <strong>BRI: </strong>
+                    <span id="upi_id_field_2">
+                        <%=UpiIda%>
+                    </span>
+
+                    <img class="upi_display_content__img"
+                        src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTE1Ljc3IDEyMi44OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTE1Ljc3IDEyMi44OCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO308L3N0eWxlPjxnPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik04OS42MiwxMy45NnY3LjczaDEyLjE5aDAuMDF2MC4wMmMzLjg1LDAuMDEsNy4zNCwxLjU3LDkuODYsNC4xYzIuNSwyLjUxLDQuMDYsNS45OCw0LjA3LDkuODJoMC4wMnYwLjAyIHY3My4yN3YwLjAxaC0wLjAyYy0wLjAxLDMuODQtMS41Nyw3LjMzLTQuMSw5Ljg2Yy0yLjUxLDIuNS01Ljk4LDQuMDYtOS44Miw0LjA3djAuMDJoLTAuMDJoLTYxLjdINDAuMXYtMC4wMiBjLTMuODQtMC4wMS03LjM0LTEuNTctOS44Ni00LjFjLTIuNS0yLjUxLTQuMDYtNS45OC00LjA3LTkuODJoLTAuMDJ2LTAuMDJWOTIuNTFIMTMuOTZoLTAuMDF2LTAuMDJjLTMuODQtMC4wMS03LjM0LTEuNTctOS44Ni00LjEgYy0yLjUtMi41MS00LjA2LTUuOTgtNC4wNy05LjgySDB2LTAuMDJWMTMuOTZ2LTAuMDFoMC4wMmMwLjAxLTMuODUsMS41OC03LjM0LDQuMS05Ljg2YzIuNTEtMi41LDUuOTgtNC4wNiw5LjgyLTQuMDdWMGgwLjAyaDYxLjcgaDAuMDF2MC4wMmMzLjg1LDAuMDEsNy4zNCwxLjU3LDkuODYsNC4xYzIuNSwyLjUxLDQuMDYsNS45OCw0LjA3LDkuODJoMC4wMlYxMy45NnogTTc5LjA0LDIxLjY5di03Ljczdi0wLjAyaDAuMDIgYzAtMC45MS0wLjM5LTEuNzUtMS4wMS0yLjM3Yy0wLjYxLTAuNjEtMS40Ni0xLTIuMzctMXYwLjAyaC0wLjAxaC02MS43aC0wLjAydi0wLjAyYy0wLjkxLDAtMS43NSwwLjM5LTIuMzcsMS4wMSBjLTAuNjEsMC42MS0xLDEuNDYtMSwyLjM3aDAuMDJ2MC4wMXY2NC41OXYwLjAyaC0wLjAyYzAsMC45MSwwLjM5LDEuNzUsMS4wMSwyLjM3YzAuNjEsMC42MSwxLjQ2LDEsMi4zNywxdi0wLjAyaDAuMDFoMTIuMTlWMzUuNjUgdi0wLjAxaDAuMDJjMC4wMS0zLjg1LDEuNTgtNy4zNCw0LjEtOS44NmMyLjUxLTIuNSw1Ljk4LTQuMDYsOS44Mi00LjA3di0wLjAyaDAuMDJINzkuMDRMNzkuMDQsMjEuNjl6IE0xMDUuMTgsMTA4LjkyVjM1LjY1di0wLjAyIGgwLjAyYzAtMC45MS0wLjM5LTEuNzUtMS4wMS0yLjM3Yy0wLjYxLTAuNjEtMS40Ni0xLTIuMzctMXYwLjAyaC0wLjAxaC02MS43aC0wLjAydi0wLjAyYy0wLjkxLDAtMS43NSwwLjM5LTIuMzcsMS4wMSBjLTAuNjEsMC42MS0xLDEuNDYtMSwyLjM3aDAuMDJ2MC4wMXY3My4yN3YwLjAyaC0wLjAyYzAsMC45MSwwLjM5LDEuNzUsMS4wMSwyLjM3YzAuNjEsMC42MSwxLjQ2LDEsMi4zNywxdi0wLjAyaDAuMDFoNjEuN2gwLjAyIHYwLjAyYzAuOTEsMCwxLjc1LTAuMzksMi4zNy0xLjAxYzAuNjEtMC42MSwxLTEuNDYsMS0yLjM3aC0wLjAyVjEwOC45MkwxMDUuMTgsMTA4LjkyeiIvPjwvZz48L3N2Zz4="
+                        alt="copy upi id" />
+                </p>
+            </button>
+            <button class="upi_display_content" id="copy_upi_id_3">
+                <p>
+                    <strong>BNI: </strong>
+                    <span id="upi_id_field_3">
+                        <%=UpiId%>
+                    </span>
+
+                    <img class="upi_display_content__img"
+                        src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTE1Ljc3IDEyMi44OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTE1Ljc3IDEyMi44OCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO308L3N0eWxlPjxnPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik04OS42MiwxMy45NnY3LjczaDEyLjE5aDAuMDF2MC4wMmMzLjg1LDAuMDEsNy4zNCwxLjU3LDkuODYsNC4xYzIuNSwyLjUxLDQuMDYsNS45OCw0LjA3LDkuODJoMC4wMnYwLjAyIHY3My4yN3YwLjAxaC0wLjAyYy0wLjAxLDMuODQtMS41Nyw3LjMzLTQuMSw5Ljg2Yy0yLjUxLDIuNS01Ljk4LDQuMDYtOS44Miw0LjA3djAuMDJoLTAuMDJoLTYxLjdINDAuMXYtMC4wMiBjLTMuODQtMC4wMS03LjM0LTEuNTctOS44Ni00LjFjLTIuNS0yLjUxLTQuMDYtNS45OC00LjA3LTkuODJoLTAuMDJ2LTAuMDJWOTIuNTFIMTMuOTZoLTAuMDF2LTAuMDJjLTMuODQtMC4wMS03LjM0LTEuNTctOS44Ni00LjEgYy0yLjUtMi41MS00LjA2LTUuOTgtNC4wNy05LjgySDB2LTAuMDJWMTMuOTZ2LTAuMDFoMC4wMmMwLjAxLTMuODUsMS41OC03LjM0LDQuMS05Ljg2YzIuNTEtMi41LDUuOTgtNC4wNiw5LjgyLTQuMDdWMGgwLjAyaDYxLjcgaDAuMDF2MC4wMmMzLjg1LDAuMDEsNy4zNCwxLjU3LDkuODYsNC4xYzIuNSwyLjUxLDQuMDYsNS45OCw0LjA3LDkuODJoMC4wMlYxMy45NnogTTc5LjA0LDIxLjY5di03Ljczdi0wLjAyaDAuMDIgYzAtMC45MS0wLjM5LTEuNzUtMS4wMS0yLjM3Yy0wLjYxLTAuNjEtMS40Ni0xLTIuMzctMXYwLjAyaC0wLjAxaC02MS43aC0wLjAydi0wLjAyYy0wLjkxLDAtMS43NSwwLjM5LTIuMzcsMS4wMSBjLTAuNjEsMC42MS0xLDEuNDYtMSwyLjM3aDAuMDJ2MC4wMXY2NC41OXYwLjAyaC0wLjAyYzAsMC45MSwwLjM5LDEuNzUsMS4wMSwyLjM3YzAuNjEsMC42MSwxLjQ2LDEsMi4zNywxdi0wLjAyaDAuMDFoMTIuMTlWMzUuNjUgdi0wLjAxaDAuMDJjMC4wMS0zLjg1LDEuNTgtNy4zNCw0LjEtOS44NmMyLjUxLTIuNSw1Ljk4LTQuMDYsOS44Mi00LjA3di0wLjAyaDAuMDJINzkuMDRMNzkuMDQsMjEuNjl6IE0xMDUuMTgsMTA4LjkyVjM1LjY1di0wLjAyIGgwLjAyYzAtMC45MS0wLjM5LTEuNzUtMS4wMS0yLjM3Yy0wLjYxLTAuNjEtMS40Ni0xLTIuMzctMXYwLjAyaC0wLjAxaC02MS43aC0wLjAydi0wLjAyYy0wLjkxLDAtMS43NSwwLjM5LTIuMzcsMS4wMSBjLTAuNjEsMC42MS0xLDEuNDYtMSwyLjM3aDAuMDJ2MC4wMXY3My4yN3YwLjAyaC0wLjAyYzAsMC45MSwwLjM5LDEuNzUsMS4wMSwyLjM3YzAuNjEsMC42MSwxLjQ2LDEsMi4zNywxdi0wLjAyaDAuMDFoNjEuN2gwLjAyIHYwLjAyYzAuOTEsMCwxLjc1LTAuMzksMi4zNy0xLjAxYzAuNjEtMC42MSwxLTEuNDYsMS0yLjM3aC0wLjAyVjEwOC45MkwxMDUuMTgsMTA4LjkyeiIvPjwvZz48L3N2Zz4="
+                        alt="copy upi id" />
+                </p>
+            </button>
+
+            <div id="copy_message" style="display: none;">UPI ID copied!</div>
+
+        </div>
+
+        <!-- Bagian QRIS -->
+ <div class="qris-container">
+    <img id="qris_image" src="https://raw.githubusercontent.com/sulaemansy/kieweuh/refs/heads/main/1740996300183.png" alt="QRIS Barcode" title="Scan QR Code ini dengan aplikasi UPI Anda" /> 
+</div>
+
+<script>
+    function updateQrisImage() {
+        const qrisImage = document.getElementById("qris_image");
+        const now = new Date();
+        const hours = now.getHours();
+
+         // Gambar kedua hanya ditampilkan antara jam 20:00 - 22:00
+        if (hours >= 20 || hours < 02) {
+         <!--   qrisImage.src = "https://raw.githubusercontent.com/sulaemansy/kieweuh/refs/heads/main/20250303_134122.jpg"; -->
+        } else {
+            qrisImage.src = "https://raw.githubusercontent.com/sulaemansy/kieweuh/refs/heads/main/1740996300183.png";
+        }
+    }
+
+    // Jalankan fungsi saat halaman dimuat
+    updateQrisImage();
+</script>
+
+
+        
+        <!-- Form Verifikasi -->
+        <form class="verification_form__root" action="submit.php" method="post">
+            <label for="upi_ref_no">Nomor refferensi.</label>
+            <input type="text" id="upi_ref_no" name="upi_ref_no" required placeholder="Ambil kode dari riwayat transaksi anda..." />
+            <button id="submit_button" type="submit">Klik proses deposit</button>
+        </form>
+
+        <!-- Tutorial -->
+        <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Deposit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #1a1a2e, #16213e);
+            color: white;
+            flex-direction: column;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            background: #f1c40f;
+            color: #333;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #d4ac0d;
+        }
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .modal-content {
+            background-color: #222;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            color: white;
+            text-align: left;
+        }
+        .close {
+            float: right;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+        .close:hover {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔹 Deposit QRIS 🔹</h2>
+    <button class="btn" onclick="openModal('depositModalQRIS')">Cara Deposit</button>
+</div>
+
+<div class="container">
+    <h2>🔹 Deposit BRI 🔹</h2>
+    <button class="btn" onclick="openModal('depositModalBRI')">Cara Deposit</button>
+</div>
+
+<div class="container">
+    <h2>🔹 Deposit BNI 🔹</h2>
+    <button class="btn" onclick="openModal('depositModalBNI')">Cara Deposit</button>
+</div>
+<div class="container">
+    <h2>🔹 Deposit Bank Jago 🔹</h2>
+    <button class="btn" onclick="openModal('jagoModal')">Cara Deposit</button>
+</div>
+
+<!-- Modal QRIS -->
+<div id="depositModalQRIS" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('depositModalQRIS')">&times;</span>
+        <h3>📌 Panduan Deposit QRIS 📌</h3>
+        <p>1️⃣ Scan QRIS yang tersedia.</p>
+        <p>2️⃣ Pastikan nominal sesuai.</p>
+        <p>3️⃣ Selesaikan pembayaran sesuai waktu yang ditentukan.</p>
+        <p>4️⃣ Salin kode referensi dari QRIS yang sudah berhasil ditransfer.</p>
+        <p>5️ Masukkan kode referensi lalu submit.</p>
+        <p>6️⃣ Cek saldo di akun setelah beberapa menit.</p>
+        <p>7️⃣ Jika saldo belum masuk, tunggu maksimal 5-10 menit.</p>
+        <p>8️⃣ Hubungi admin jika ada kendala.</p>
+        <p>9️⃣ Bonus 100% pengguna baru claim di customer service.</p>
+        <p>✅ Proses deposit otomatis setelah pembayaran berhasil.</p>
+    </div>
+</div>
+
+<!-- Modal BRI -->
+<div id="depositModalBRI" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('depositModalBRI')">&times;</span>
+        <h3>📌 Panduan Deposit BRI 📌</h3>
+        <p>1️⃣ Masuk ke aplikasi BRImo.</p>
+        <p>2️⃣ Pilih menu Transfer ke rekening tujuan.</p>
+        <p>3️⃣ Masukkan nomor rekening tujuan yang tersedia.</p>
+        <p>4️⃣ Pastikan nominal transfer sesuai.</p>
+        <p>5️⃣ Konfirmasi transaksi dan selesaikan pembayaran.</p>
+        <p>6️⃣ Simpan bukti transfer untuk konfirmasi jika diperlukan.</p>
+        <p>7️⃣ Cek saldo di akun setelah beberapa menit.</p>
+        <p>8️⃣ Jika saldo belum masuk, tunggu maksimal 5-10 menit.</p>
+        <p>9️⃣ Hubungi admin jika ada kendala.</p>
+        <p>✅ Proses deposit otomatis setelah pembayaran berhasil.</p>
+    </div>
+</div>
+
+<!-- Modal BNI -->
+<div id="depositModalBNI" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('depositModalBNI')">&times;</span>
+        <h3>📌 Panduan Deposit BNI 📌</h3>
+        <p>1️⃣ Masuk ke aplikasi BNI Mobile Banking.</p>
+        <p>2️⃣ Pilih menu Transfer ke rekening tujuan.</p>
+        <p>3️⃣ Masukkan nomor rekening tujuan yang tersedia.</p>
+        <p>4️⃣ Pastikan nominal transfer sesuai.</p>
+        <p>5️⃣ Konfirmasi pembayaran isi no rekening lalu submit.</p>
+        <p>6️⃣ Tunggu saldo masuk.</p>
+        <p>7️⃣ Cek saldo di akun setelah beberapa menit.</p>
+        <p>8️⃣ Jika saldo belum masuk, tunggu maksimal 5-10 menit.</p>
+        <p>9️⃣ Hubungi admin jika ada kendala.</p>
+        <p>✅ Proses deposit otomatis setelah pembayaran berhasil.</p>
+    </div>
+</div>
+
+<!-- Modal Bank Jago -->
+<div id="jagoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('jagoModal')">&times;</span>
+        <h3>📌 Panduan Deposit Bank Jago 📌</h3>
+        <p>1️⃣ Buka aplikasi Bank Jago.</p>
+        <p>2️⃣ Pilih menu transfer ke rekening bank lain.</p>
+        <p>3️⃣ Masukkan nomor rekening tujuan dan nominal deposit.</p>
+        <p>4️⃣ Pastikan nama penerima sesuai dan nominal benar.</p>
+        <p>5️⃣ Konfirmasi pembayaran isi no rekening lalu submit.</p>
+        <p>6️⃣ Tunggu saldo masuk dalam 5-10 menit.</p>
+        <p>7️⃣ Hubungi admin jika ada kendala.</p>
+        <p>✅ Proses deposit otomatis setelah pembayaran berhasil.</p>
+    </div>
+</div>
+
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
+</script>
+
+
+</body>
+</html>
+
+    <script>
+        const copyUpiId1 = document.getElementById("copy_upi_id_1");
+        const copyUpiId2 = document.getElementById("copy_upi_id_2");
+        const copyUpiId3 = document.getElementById("copy_upi_id_3");
+        const copyMessage = document.getElementById("copy_message");
+
+        copyUpiId1.addEventListener("click", copyToClipboard.bind(null, "upi_id_field_1"));
+        copyUpiId2.addEventListener("click", copyToClipboard.bind(null, "upi_id_field_2"));
+        copyUpiId3.addEventListener("click", copyToClipboard.bind(null, "upi_id_field_3"));
+
+        function copyToClipboard(id) {
+            let upi_id = document.getElementById(id).innerText;
+            console.log(upi_id);
+            navigator.clipboard.writeText(upi_id)
+                .then(() => {
+                    copyMessage.style.display = "block";
+                    setTimeout(() => {
+                        copyMessage.style.display = "none";
+                    }, 2000); // Hide message after 2 seconds
+                })
+                .catch(err => console.error('Could not copy text: ', err));
+        }
+
+        // Optional: Dinamis menampilkan jumlah dari URL parameter (Uncomment jika diperlukan)
+        // const displayAmount = document.getElementById("display_amount");
+        // const urlParams = new URLSearchParams(window.location.search);
+        // const amount = urlParams.get("am");
+        // displayAmount.innerText = amount;
+
+        // const upiPayNow = document.getElementById("upi_pay_now");
+
+        const alertMessage = (text) => {
+            const msg = document.createElement('div');
+            msg.setAttribute('data-v-1dcba851', '');
+            msg.className = 'msg';
+
+            const msgContent = document.createElement('div');
+            msgContent.setAttribute('data-v-1dcba851', '');
+            msgContent.className = 'msg-content v-enter-active v-enter-to';
+            msgContent.style = '';
+            msgContent.innerHTML = `<table style="width: 100%; border: 1px solid black; background-color: white;">
+                                        <tr>
+                                            <td style="padding: 10px; text-align: center; color: red;">${text}</td>
+                                        </tr>
+                                    </table>`;
+
+            msg.appendChild(msgContent);
+            document.body.appendChild(msg);
+
+            setTimeout(() => {
+                msgContent.classList.remove('v-enter-active', 'v-enter-to');
+                msgContent.classList.add('v-leave-active', 'v-leave-to');
+
+                setTimeout(() => {
+                    document.body.removeChild(msg);
+                }, 100);
+            }, 1000);
+        }
+
+        const submitButton = document.getElementById("submit_button");
+        submitButton.addEventListener("click", async (event) => {
+            try {
+                event.preventDefault();
+                const upiRefNo = document.getElementById("upi_ref_no").value;
+                const amount = '<%=Amount%>';
+
+                const response = await axios.post("/wallet/paynow/manual_upi_request", {
+                    money: amount,
+                    utr: upiRefNo,
+                })
+
+                if (!response?.data) {
+                    alertMessage("Ada yang tidak beres!")
+                    return
+                }
+
+                if (response?.data?.status === false) {
+                    alertMessage(response?.data?.message)
+                    return
+                }
+
+                alertMessage(response?.data?.message)
+
+                window.location.href = "/wallet/rechargerecord"
+            } catch (error) {
+                console.log(error);
+                alertMessage("Ada yang tidak beres!")
+            }
+        });
+    </script>
+</body>
+
+</html>

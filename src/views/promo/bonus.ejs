@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bonus Pendaftaran</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #2e004f, #ff69b4);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #3c0d60, #6b0e74);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+      max-width: 600px;
+      width: 100%;
+      animation: fadeIn 0.5s ease-in-out;
+      color: #fff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      color: #ffde59;
+      margin-bottom: 16px;
+    }
+
+    .highlight {
+      color: #00ffcc;
+      font-weight: bold;
+    }
+
+    .warning {
+      color: #ffc107;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th, td {
+      border: 1px solid #ffffff33;
+      padding: 10px;
+      text-align: center;
+      color: #fff;
+    }
+
+    th {
+      background-color: #7a1fa2;
+    }
+
+    td {
+      background-color: #9c27b0;
+    }
+
+    .note {
+      font-size: 14px;
+      margin-top: 16px;
+      color: #e0e0e0;
+    }
+
+    @media (max-width: 500px) {
+      .card {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      p, .note {
+        font-size: 15px;
+      }
+
+      th, td {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎁 Bonus Daftar Rp10.000</h1>
+    <h1>🎮 Khusus Game WINGO</h1>
+
+    <p>Selamat datang di platform kami! Dapatkan <span class="highlight">bonus langsung Rp10.000</span> setelah mendaftar — tanpa perlu deposit awal.</p>
+
+    <p class="warning">⚠️ Syarat & Ketentuan Penggunaan Bonus</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Saldo Mencapai</th>
+          <th>Wajib Deposit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Rp50.000</td>
+          <td>Rp50.000</td>
+        </tr>
+        <tr>
+          <td>Rp100.000</td>
+          <td>Rp100.000</td>
+        </tr>
+        <tr>
+          <td>Rp500.000</td>
+          <td>Rp500.000</td>
+        </tr>
+        <tr>
+          <td>Seterusnya (kelipatan)</td>
+          <td>Sesuai jumlah kenaikan</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="note">🎮 Kebijakan ini untuk memastikan keadilan dan menghindari penyalahgunaan bonus. Segera lakukan deposit jika saldo meningkat agar tetap bisa bermain tanpa gangguan.</p>
+  </div>
+</body>
+</html>

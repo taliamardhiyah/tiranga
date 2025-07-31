@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Merah Hitam</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #222; color: #fff; margin: 0; }
+    .container { max-width: 430px; margin: 20px auto; background: #333; border-radius: 14px; padding: 18px 8px 24px 8px; box-sizing: border-box; }
+    .period { font-size: 17px; margin-bottom: 6px; }
+    .countdown { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
+    .saldo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .saldo { font-size: 16px; color: #ffd700; }
+    .deposit-btn {
+      background: #ffd700;
+      color: #222;
+      border: none;
+      border-radius: 7px;
+      padding: 6px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+    .deposit-btn:hover { background: #ffe066; }
+
+    .bet-btn, .bet-card-btn {
+      width: 48%;
+      padding: 12px;
+      font-size: 17px;
+      border-radius: 8px;
+      border: none;
+      margin: 2px 1%;
+      cursor: pointer;
+    }
+
+    .bet-btn.red { background: #e74c3c; color: #fff; }
+    .bet-btn.black { background: #222; color: #fff; border: 2px solid #fff; }
+    .bet-card-btn { width: 30%; background: #444; color: #fff; margin: 2px 1%; border: 2px solid #888; }
+    .bet-card-btn.special {
+  background: #ffd700;
+  color: #000;
+  font-weight: bold;
+  border: 2px solid #fff;
+}
+
+    .bet-btn:disabled, .bet-card-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .amount-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: nowrap;
+    }
+    .input-amount.medium {
+      width: 100px;
+      font-size: 16px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: none;
+      background: #232323;
+      color: #ffd700;
+      text-align: center;
+      font-weight: bold;
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .bet-mult-group-horizontal {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+    .bet-mult-btn {
+      background: #444;
+      color: #ffd700;
+      border: 1.5px solid #ffd700;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .bet-mult-btn:hover, .bet-mult-btn:focus {
+      background: #ffd700;
+      color: #222;
+    }
+
+.card {
+  font-size: 60px;
+  margin: 20px 0 14px 0;
+  text-align: center;
+  min-height: 90px;
+  padding-top: 4px;
+}
+
+
+    .desc { font-size: 15px; margin-bottom: 8px; text-align: center; }
+
+    .history, .bet-history {
+      background: #232323;
+      border-radius: 8px;
+      padding: 8px;
+      margin-top: 16px;
+      font-size: 13px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .history-table, .bet-history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th, .bet-history-table th {
+      color: #ffd700;
+      font-size: 13px;
+      border-bottom: 1px solid #444;
+      position: sticky;
+      top: 0;
+      background: #232323;
+      z-index: 2;
+    }
+
+    .history-table td, .bet-history-table td {
+      padding: 4px 2px;
+      text-align: center;
+    }
+
+    .remi-icon { width: 32px; height: 44px; vertical-align: middle; }
+
+    .toggle-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .toggle-buttons button {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      margin: 0 4px;
+      border-radius: 8px;
+      border: none;
+      background: #444;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .toggle-buttons button.active {
+      background: #ffd700;
+      color: #000;
+    }
+
+    .notif-result-box {
+      display: none;
+      margin: 0 auto 10px auto;
+      background: #232;
+      color: #ffd700;
+      border: 1.5px solid #ffd700;
+      border-radius: 7px;
+      padding: 6px 16px;
+      font-size: 15px;
+      text-align: center;
+      width: fit-content;
+      min-width: 0;
+      box-shadow: 0 2px 8px #0002;
+      z-index: 10;
+      position: relative;
+      animation: fadeIn 0.2s;
+    }
+    .notif-result-box.jackpot {
+      color: #fff;
+      background: linear-gradient(90deg,#ffb300,#ff3c00,#ffb300);
+      border: 2px solid #fff;
+      font-weight: bold;
+      text-shadow: 1px 1px 4px #000a;
+    }
+    .notif-result-box.win {
+      color: #3f9368;
+      border: 1.5px solid #3f9368;
+      background: #232;
+      font-weight: bold;
+    }
+    .notif-result-box.lose {
+      color: #e74c3c;
+      border: 1.5px solid #e74c3c;
+      background: #232;
+      font-weight: bold;
+    }
+    .bet-success-box {
+      display: none;
+      margin: 0 auto 10px auto;
+      background: #232;
+      color: #ffd700;
+      border: 1.5px solid #ffd700;
+      border-radius: 7px;
+      padding: 6px 16px;
+      font-size: 15px;
+      text-align: center;
+      width: fit-content;
+      min-width: 0;
+      box-shadow: 0 2px 8px #0002;
+      z-index: 10;
+      position: relative;
+      animation: fadeIn 0.2s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    /* Tambahan untuk Leaderboard */
+    .tab-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+    }
+    .tab-buttons button {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      margin: 0 4px;
+      border-radius: 8px;
+      border: none;
+      background: #444;
+      color: #fff;
+      cursor: pointer;
+    }
+    .tab-buttons button.active {
+      background: #ffd700;
+      color: #000;
+    }
+    .tab-content {
+      display: none;
+      margin-top: 10px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    .leaderboard-table th {
+      background: #444;
+      color: #ffd700;
+      padding: 8px;
+      text-align: left;
+    }
+    .leaderboard-table td {
+      background: #333;
+      padding: 8px;
+      border-top: 1px solid #444;
+    }
+
+    @media (max-width: 600px) {
+      .container { max-width: 99vw; padding: 6vw 2vw 8vw 2vw; }
+      .remi-icon { width: 24px; height: 32px; }
+      .card { font-size: 30px; min-height: 40px; }
+      .history-table th, .history-table td,
+      .bet-history-table th, .bet-history-table td {
+        font-size: 12px; padding: 2px 1px;
+      }
+      .toggle-buttons button { font-size: 12px; }
+      .amount-row {
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: nowrap;
+      }
+      .bet-mult-group-horizontal {
+        gap: 4px;
+        flex-wrap: nowrap;
+      }
+      .bet-mult-btn {
+        font-size: 13px;
+        padding: 4px 6px;
+      }
+      .input-amount.medium {
+        width: 70px;
+        font-size: 15px;
+      }
+      .deposit-btn {
+        font-size: 13px;
+        padding: 5px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="saldo-row">
+      <div class="saldo">Saldo: <span id="saldo">Loading...</span></div>
+      <button class="deposit-btn" onclick="window.location.href='/wallet/recharge'">Deposit</button>
+    </div>
+    <div class="period">Periode: <span id="period"></span></div>
+    <div class="countdown" id="countdown">20</div>
+    <div id="card-area" class="card"></div>
+    <div class="desc" id="desc"></div>
+    <div id="notif-result" class="notif-result-box"></div>
+    <div id="bet-success" class="bet-success-box">Bet berhasil!</div>
+    <div class="amount-row">
+      <input type="number" id="amount" class="input-amount medium" placeholder="Nominal (min 1000)" value="1000">
+      <div class="bet-mult-group-horizontal">
+        <button type="button" class="bet-mult-btn" data-mult="0.5">½</button>
+        <button type="button" class="bet-mult-btn" data-mult="2">x2</button>
+        <button type="button" class="bet-mult-btn" data-mult="3">x3</button>
+        <button type="button" class="bet-mult-btn" data-mult="5">x5</button>
+        <button type="button" class="bet-mult-btn" data-mult="10">x10</button>
+      </div>
+    </div>    
+    
+    <div style="display:flex;gap:6px;justify-content:space-between;margin-bottom:8px;">
+  <button class="bet-btn red" id="bet-red" style="flex: 1;">Merah</button>
+  <button class="bet-card-btn special" data-card="joker" style="flex: 0.7;">🃏</button>
+  <button class="bet-btn black" id="bet-black" style="flex: 1;">Hitam</button>
+</div>
+
+<div style="display:flex;justify-content:center;margin-bottom:10px;">
+  <button onclick="showHowToWin()" style="background:#444;color:#ffd700;border:1px solid #ffd700;border-radius:8px;padding:6px 16px;font-size:14px;cursor:pointer;">
+    ℹ Cara Menang
+  </button>
+</div>
+<!-- Blur Background -->
+<div id="modal-overlay" style="
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+" onclick="closeHowToWin()"></div>
+
+<!-- Modal Box -->
+<div id="how-to-win-modal" style="
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 10px;
+  padding: 18px 22px;
+  font-size: 14px;
+  max-width: 90vw;
+  width: 360px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px #000a;
+  animation: fadeIn 0.3s ease-in-out;
+">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <strong style="font-size:16px;">📢 Cara Menang Taruhan</strong>
+    <button onclick="closeHowToWin()" style="
+      background: none;
+      border: none;
+      color: #ffd700;
+      font-size: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    ">❌</button>
+  </div>
+
+  <div style="line-height: 1.6;">
+    <strong>🔴 Taruhan Merah</strong> atau <strong>⚫ Taruhan Hitam</strong>:<br>
+    - Jika kartu yang keluar <strong>J, Q, atau K</strong> → Menang <strong>x6</strong><br>
+    - Jika kartu yang keluar <strong>A (As)</strong> → Menang <strong>x12</strong><br>
+    - Jika kartu yang keluar <strong>2 sampai 10</strong> → Menang <strong>x2</strong><br><br>
+
+    <strong>🃏 Taruhan Joker</strong>:<br>
+    - Jika kartu yang keluar <strong>JOKER</strong> → Menang <strong>x24</strong>
+    <br><br>
+⚠️ <strong>Perhatian:</strong><br>
+Tidak diperbolehkan bertaruh <strong>Merah</strong> dan <strong>Hitam</strong> secara bersamaan dalam satu periode.
+Jika dilakukan, taruhan akan <strong>dianggap tidak sah</strong> dan <strong>tidak dihitung</strong>.
+
+  </div>
+</div>
+
+
+    <div style="font-size:13px;color:#ccc;margin-bottom:2px;">Taruhan Kartu Spesial:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;margin-bottom:8px;">
+      <button class="bet-card-btn special" data-card="joker">Joker</button>
+      <button class="bet-card-btn special" data-card="as">As</button>
+      <button class="bet-card-btn special" data-card="j">J</button>
+      <button class="bet-card-btn special" data-card="q">Q</button>
+      <button class="bet-card-btn special" data-card="k">K</button>
+    </div>
+
+    <div class="tab-buttons">
+      <button class="active" onclick="switchTab('history')">📜 History</button>
+      <button onclick="switchTab('mybets')">🎮 Taruhan Saya</button>
+      <button onclick="switchTab('leaderboard')">🏆 Leaderboard</button>
+    </div>
+
+    <div class="tab-content active" id="history">
+      <div class="history" id="history-table-container"></div>
+    </div>
+    <div class="tab-content" id="mybets">
+      <div class="bet-history" id="bet-history"></div>
+    </div>
+    <div class="tab-content" id="leaderboard">
+      <table class="leaderboard-table">
+        <thead><tr><th>Rank</th><th>Nama</th><th>Total Menang</th></tr></thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let interval = null;
+    let canBet = true;
+    let lastNotifPeriod = null;
+
+    function getCardIcon(suit, rank, color) {
+      if (suit === "joker") return '<img class="remi-icon" src="https://media.tenor.com/sZh9yzExHWcAAAAm/joker-joker-dance.webp" title="Joker"/>';
+      let suitIcon = {
+        hearts: "https://media.tenor.com/VIIVIcjjCtoAAAAM/cora%C3%A7%C3%A3o.gif",
+        diamonds: "https://media.tenor.com/VIIVIcjjCtoAAAAM/cora%C3%A7%C3%A3o.gif",
+        clubs: "https://media.tenor.com/iJPraHOXKKMAAAAm/puso-heart.webp",
+        spades: "https://media.tenor.com/iJPraHOXKKMAAAAm/puso-heart.webp"
+      }[suit];
+      let colorStyle = color === "red" ? "color:#e74c3c;" : color === "black" ? "color:#fff;" : "";
+      return `<span style="display:inline-block;vertical-align:middle;">
+        <img class="remi-icon" src="${suitIcon}" title="${suit}" />
+        <span style="font-weight:bold;${colorStyle}font-size:18px;">${rank}</span>
+      </span>`;
+    }
+
+    async function getSaldo() {
+      try {
+        const res = await fetch('/api/user/saldo');
+        const data = await res.json();
+        document.getElementById('saldo').innerText = data.saldo 
+  ? data.saldo.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) 
+  : 'Rp0';
+
+      } catch {
+        document.getElementById('saldo').innerText = 'Gagal';
+      }
+    }
+
+    function showBetSuccess(msg) {
+      const box = document.getElementById('bet-success');
+      box.textContent = msg || 'Bet berhasil!';
+      box.style.display = 'block';
+      setTimeout(() => { box.style.display = 'none'; }, 1800);
+    }
+
+    function showResultNotif(type, msg) {
+      const box = document.getElementById('notif-result');
+      box.className = 'notif-result-box ' + type;
+      box.textContent = msg;
+      box.style.display = 'block';
+      setTimeout(() => { box.style.display = 'none'; }, 3500);
+    }
+
+    async function refreshStatus() {
+      const res = await fetch('/api/redblack/status');
+      const data = await res.json();
+      document.getElementById('period').innerText = data.period;
+      document.getElementById('countdown').innerText = data.countdown;
+      canBet = data.canBet;
+
+      document.getElementById('bet-red').disabled = !canBet;
+      document.getElementById('bet-black').disabled = !canBet;
+      document.querySelectorAll('.bet-card-btn').forEach(btn => btn.disabled = !canBet);
+
+      if (data.result) {
+        document.getElementById('card-area').innerHTML = getCardIcon(data.result.suit, data.result.rank, data.result.color);
+        document.getElementById('desc').innerText = `Hasil Kartu: ${data.result.rank} ${data.result.suit} (${data.result.color})`;
+      } else {
+        document.getElementById('card-area').innerHTML = '';
+        document.getElementById('desc').innerText = '';
+      }
+
+      if (data.history && Array.isArray(data.history)) {
+        let rows = data.history.map(h =>
+          `<tr>
+            <td>${h.period}</td>
+            <td>${getCardIcon(h.suit, h.rank, h.color)}</td>
+            <td style="font-weight:bold;${h.color === 'red' ? 'color:#e74c3c' : h.color === 'black' ? 'color:#fff' : 'color:#ffd700'}">${h.rank}</td>
+            <td>${h.suit === 'joker' ? '<span style="color:#ffd700">JOKER</span>' : h.color}</td>
+          </tr>`).join('');
+        document.getElementById('history-table-container').innerHTML = `
+          <table class="history-table">
+            <thead>
+              <tr><th>Periode</th><th>Kartu</th><th>Angka</th><th>Warna</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+      }
+
+      if (data.mybets && Array.isArray(data.mybets)) {
+        let rows = data.mybets.map(b =>
+          `<tr>
+            <td>${b.period}</td>
+            <td>${b.bet_type.toUpperCase()}</td>
+            <td>${b.amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
+            <td>${b.status === 0 ? '<span style="color:#ffd700">Pending</span>' : (b.win_amount > 0 ? '<span style="color:#3f9368">Menang</span>' : '<span style="color:#e74c3c">Kalah</span>')}</td>
+            <td>${b.status === 1 ? b.win_amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) : '-'}</td>
+          </tr>`).join('');
+        document.getElementById('bet-history').innerHTML = `
+          <div style="margin-top:10px;font-size:13px;color:#ffd700;">Riwayat Taruhan Anda</div>
+          <table class="bet-history-table">
+            <thead>
+              <tr><th>Periode</th><th>Bet</th><th>Nominal</th><th>Status</th><th>Menang</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+
+        // NOTIFIKASI MENANG/KALAH
+        const lastBet = data.mybets.find(b => b.status === 1 && b.period === (data.period - 1));
+        if (lastBet && lastNotifPeriod !== lastBet.period) {
+          lastNotifPeriod = lastBet.period;
+          if (lastBet.win_amount >= 1000000) {
+            showResultNotif('jackpot', `🎉 JACKPOT! Anda menang Rp${lastBet.win_amount.toLocaleString()} di periode ${lastBet.period}`);
+          } else if (lastBet.win_amount > 0) {
+            showResultNotif('win', `Selamat, Anda menang Rp${lastBet.win_amount.toLocaleString()} di periode ${lastBet.period}`);
+          } else {
+            showResultNotif('lose', `Belum beruntung di periode ${lastBet.period}`);
+          }
+        }
+      }
+    }
+
+    document.getElementById('bet-red').onclick = async function () {
+      const amount = parseInt(document.getElementById('amount').value);
+      if (!amount || amount < 1000) return showBetSuccess('Minimal 1000');
+      const res = await fetch('/api/redblack/bet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ betType: 'red', amount })
+      });
+      const data = await res.json();
+      if (data.success || data.message?.toLowerCase().includes('berhasil')) {
+        showBetSuccess('Bet berhasil!');
+      } else {
+        showBetSuccess(data.message || 'Bet gagal');
+      }
+      getSaldo();
+    };
+
+    document.getElementById('bet-black').onclick = async function () {
+      const amount = parseInt(document.getElementById('amount').value);
+      if (!amount || amount < 1000) return showBetSuccess('Minimal 1000');
+      const res = await fetch('/api/redblack/bet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ betType: 'black', amount })
+      });
+      const data = await res.json();
+      if (data.success || data.message?.toLowerCase().includes('berhasil')) {
+        showBetSuccess('Bet berhasil!');
+      } else {
+        showBetSuccess(data.message || 'Bet gagal');
+      }
+      getSaldo();
+    };
+
+    document.querySelectorAll('.bet-card-btn').forEach(btn => {
+      btn.onclick = async function () {
+        const card = btn.getAttribute('data-card');
+        const amount = parseInt(document.getElementById('amount').value);
+        if (!amount || amount < 1000) return showBetSuccess('Minimal 1000');
+        const res = await fetch('/api/redblack/bet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ betType: card, amount })
+        });
+        const data = await res.json();
+        if (data.success || data.message?.toLowerCase().includes('berhasil')) {
+          showBetSuccess('Bet berhasil!');
+        } else {
+          showBetSuccess(data.message || 'Bet gagal');
+        }
+        getSaldo();
+      };
+    });
+
+    document.getElementById('amount').value = 1000;
+
+    document.querySelectorAll('.bet-mult-btn').forEach(btn => {
+      btn.onclick = function () {
+        let mult = parseFloat(btn.getAttribute('data-mult'));
+        let amountInput = document.getElementById('amount');
+        let val = parseInt(amountInput.value) || 1000;
+        let newVal = mult === 0.5 ? Math.floor(val / 2) : val * mult;
+        if (newVal < 1000) newVal = 1000;
+        amountInput.value = newVal;
+      };
+    });
+
+    function switchTab(id) {
+      document.querySelectorAll('.tab-buttons button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelector(`.tab-buttons button[onclick*="${id}"]`).classList.add('active');
+      document.getElementById(id).classList.add('active');
+      if(id === 'leaderboard') fetchLeaderboard();
+    }
+
+    async function fetchLeaderboard() {
+      const res = await fetch('/redblack/leaderboard');
+      const data = await res.json();
+      let html = '';
+      (data.leaderboard || []).forEach((row, i) => {
+        html += `<tr>
+          <td>${i + 1}</td>
+          <td>${row.name_user || '-'}</td>
+          <td>${(row.total_win || 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
+
+        </tr>`;
+      });
+      document.getElementById('leaderboardBody').innerHTML = html;
+    }
+
+    getSaldo();
+    refreshStatus();
+    fetchLeaderboard();
+    interval = setInterval(() => {
+      refreshStatus();
+      getSaldo();
+      fetchLeaderboard();
+    }, 1000);
+    
+function showHowToWin() {
+  document.getElementById('how-to-win-modal').style.display = 'block';
+  document.getElementById('modal-overlay').style.display = 'block';
+}
+
+function closeHowToWin() {
+  document.getElementById('how-to-win-modal').style.display = 'none';
+  document.getElementById('modal-overlay').style.display = 'none';
+}
+
+  </script>
+</body>
+</html>
